@@ -42,7 +42,7 @@ function Home() {
    let newws=null;
    if (authenticated_status && newws===null){
     const ws_url=process.env.REACT_APP_WS_URL;
-    const ws_base_url=window.location.hostname === 'localhost' ? process.env.REACT_APP_WS_BASE_URL : process.env.REACT_APP_IP_WS_BASE_URL;
+    const ws_base_url=process.env.REACT_APP_IP_WS_BASE_URL;
     const token=localStorage.getItem('token');
     newws=new WebSocket(`${ws_base_url}${ws_url}/${token}`)
     setWs(newws);

@@ -24,7 +24,7 @@ function App() {
   const authenticated_status = useSelector(state => state.authenticationSlice.isAuthenticated);
   const [loginModal,setLoginModal]=useState(false);
   const [SignupModal,setSignupModal]=useState(false);
-  const BASE_URL=window.location.hostname === 'localhost' ? process.env.REACT_APP_BASE_URL : process.env.REACT_APP_IP_BASE_URL;
+  const BASE_URL=process.env.REACT_APP_IP_BASE_URL;
   const [signup_details,setsignup_details]=useState({
     "signup_firstname":"",
     "signup_lastname":"",
