@@ -15,7 +15,7 @@ import { Dropdown, Space,Menu} from 'antd';
 import axios from "axios"
 import {  useEffect, useState} from 'react';
 import { useDispatch, useSelector} from 'react-redux';
-import { logOut,loggedin,check_authenticate_status } from './redux/slices/authenticated';
+import { check_authenticate_status } from './redux/slices/authenticated';
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {

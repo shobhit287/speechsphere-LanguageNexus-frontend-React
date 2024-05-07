@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import blackscreen from '../static/videos/blackscreen.mp4';
 import noise from '../static/videos/noise.mp4';
-import Spinner from './Spinner';
 import { FaMale } from "react-icons/fa";
 import { server } from '../webRTC/server';
 import { FaFemale } from "react-icons/fa";
@@ -20,7 +19,7 @@ function Home() {
   const [ws, setWs] = useState(null);
   const peerConnection=useRef(null);
   const dispatch = useDispatch();
-  const BASE_URL=window.location.hostname === 'localhost' ? process.env.REACT_APP_BASE_URL : process.env.REACT_APP_IP_BASE_URL;
+  // const BASE_URL=window.location.hostname === 'localhost' ? process.env.REACT_APP_BASE_URL : process.env.REACT_APP_IP_BASE_URL;
   const senderAudio=useRef(null)
   const RemoteAudio=useRef(null)
   const [selectedUser,setSelectedUser]=useState();
@@ -203,7 +202,7 @@ function answerBtnHandler(event)
 {
   const buttonText = event.target.innerText;
   if (buttonText==="Answer"){
-   let response= answer_offer_remote(peerConnection,server,ws,local_video,remote_video,remote_user_id.current['user_id'],remote_user_answer.current)
+   answer_offer_remote(peerConnection,server,ws,local_video,remote_video,remote_user_id.current['user_id'],remote_user_answer.current)
    setmessages([]);
    setremotemediaaccess(true);
    setStartBtnText("Stop")
