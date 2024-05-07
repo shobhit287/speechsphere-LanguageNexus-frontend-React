@@ -39,8 +39,7 @@ function App() {
   })
   function SignupHandler(e){
     e.preventDefault();
-    // axios.post(`${BASE_URL}/signup`,signup_details)
-    axios.post(`http://127.0.0.1:8000/signup`,signup_details)
+    axios.post(`${BASE_URL}/signup`,signup_details)
     .then(response=>{
       if (response.data.status){
          toast.success("SignUp Successfully")
