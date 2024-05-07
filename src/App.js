@@ -39,7 +39,8 @@ function App() {
   })
   function SignupHandler(e){
     e.preventDefault();
-    axios.post(`${BASE_URL}/signup`,signup_details)
+    // axios.post(`${BASE_URL}/signup`,signup_details)
+    axios.post(`https://speechsphere.netlify.app:8000/signup`,signup_details)
     .then(response=>{
       if (response.data.status){
          toast.success("SignUp Successfully")
