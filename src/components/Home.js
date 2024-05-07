@@ -39,8 +39,8 @@ function Home() {
   }, [dispatch]);
   const authenticated_status = useSelector(state => state.authenticationSlice.isAuthenticated);
   useEffect(()=>{
-   let newws;
-   if (authenticated_status){
+   let newws=null;
+   if (authenticated_status && newws===null){
     const ws_url=process.env.REACT_APP_WS_URL;
     const ws_base_url=window.location.hostname === 'localhost' ? process.env.REACT_APP_WS_BASE_URL : process.env.REACT_APP_IP_WS_BASE_URL;
     const token=localStorage.getItem('token');
@@ -48,14 +48,12 @@ function Home() {
     setWs(newws);
     ws_reference.current=newws;
    }
-   else{
-    if(newws){
-      ws.close()
+   else if(!authenticated_status && newws) {
+      newws.close()
       setWs(null);
-    }
+    
    }
    return () => {
-    debugger
     if (ws_reference.current && peerConnection?.current?.currentRemoteDescription){
       let data={'type':'user_leave','remote_id':remote_user_id?.current?.user_id}
       ws_reference.current.send(JSON.stringify(data))
@@ -70,7 +68,7 @@ function Home() {
      }
    
   };
-  
+  // eslint-disable-next-line
   },[authenticated_status])
 
 //recieve data   
@@ -288,8 +286,9 @@ function answerBtnHandler(event)
  useEffect(()=>{
 if (wsdata?.type==='users_info'){
   handleUpdateOnlineUsers(wsdata['data']);
-}
+}//  eslint-disable-next-line
  },[selectedGender,wsdata])
+
 function handleDisconnectedCall(){
   let data={"type":"call_disconnected_by_user","remote_id":remote_user_id.current['user_id']}
   ws.send(JSON.stringify(data))
