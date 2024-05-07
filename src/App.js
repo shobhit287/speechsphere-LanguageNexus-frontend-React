@@ -9,10 +9,8 @@ import Home from './components/Home';
 import About from './components/About';
 import Contact from './components/Contact';
 import Help from './components/Help';
-import Login from './components/Login';
 import {toast} from 'react-toastify';
 import { IoIosLogOut } from "react-icons/io";
-import Signup from './components/Signup';
 import { Dropdown, Space,Menu} from 'antd';
 import axios from "axios"
 import {  useEffect, useState} from 'react';
@@ -246,8 +244,6 @@ function App() {
       <Route path="/about" element={<About/>}/>
       <Route path="/contact" element={<Contact/>}/>
       <Route path="/help" element={<Help/>}/>
-      <Route path="/login" element={<Login/>}/>
-      <Route path="/signup" element={<Signup/>}/>
     </Routes>
    </div>
   );

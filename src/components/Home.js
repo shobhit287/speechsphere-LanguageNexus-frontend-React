@@ -2,23 +2,19 @@ import React, { useEffect, useRef, useState } from 'react';
 import blackscreen from '../static/videos/blackscreen.mp4';
 import noise from '../static/videos/noise.mp4';
 import Spinner from './Spinner';
-import { DownOutlined } from '@ant-design/icons';
 import { FaMale } from "react-icons/fa";
 import { server } from '../webRTC/server';
-import { FaLanguage } from "react-icons/fa";
 import { FaFemale } from "react-icons/fa";
 import { BiMaleFemale } from "react-icons/bi";
 import { create_offer_remote } from '../webRTC/createoffer';
 import { answer_offer_remote } from '../webRTC/answeroffer';
-import { Dropdown, Space ,Menu, Form, Input ,Button} from 'antd';
+import { Dropdown, Space ,Menu} from 'antd';
 import sender_tone from '../static/audio/sender_tone.mp3';
 import { accept_answer } from '../webRTC/acceptanswer';
 import remote_tone from '../static/audio/remote_tone.mp3';
 import { useDispatch,useSelector } from 'react-redux';
 import { check_authenticate_status } from '../redux/slices/authenticated';
 import { toast } from 'react-toastify';
-import { json } from 'react-router-dom';
-import { TfiRulerAlt } from 'react-icons/tfi';
 function Home() {
  
   const [ws, setWs] = useState(null);
@@ -84,31 +80,31 @@ if (ws){
     let data_recieve=JSON.parse(event['data'])
     setwsdata(data_recieve)
     console.log("FKJFK",event)
-    if (data_recieve['type']=="users_info"){
+    if (data_recieve['type']==="users_info"){
         handleUpdateOnlineUsers(data_recieve['data'])
     }
-    if (data_recieve['type']=="recieved_offer"){
+    if (data_recieve['type']==="recieved_offer"){
         handleRecievedOffer(data_recieve)
     }
-    if (data_recieve['type']=="rejected"){
+    if (data_recieve['type']==="rejected"){
         handleCallRejected(data_recieve['rejected_by'])
     }
-    if (data_recieve['type']=="cancelled_by_offered_user"){
+    if (data_recieve['type']==="cancelled_by_offered_user"){
        cancelled_by_offered_user()
     }
-    if (data_recieve['type']=="call_accepted"){
+    if (data_recieve['type']==="call_accepted"){
        handleAcceptedCall(data_recieve)
     }
-    if (data_recieve['type']=="call_connected_success"){
+    if (data_recieve['type']==="call_connected_success"){
        handleCallConnectedSuccess()
     }
-    if (data_recieve['type']=="call_disconnected_by_user"){
+    if (data_recieve['type']==="call_disconnected_by_user"){
        handleCallDisconnected()
     }
-    if (data_recieve['type']=="user_leave"){
+    if (data_recieve['type']==="user_leave"){
        handleUserLeave()
     }
-    if (data_recieve['type']=="recieved_msg"){
+    if (data_recieve['type']==="recieved_msg"){
        handleRecievedMsg(data_recieve['msg'])
     }
   }
@@ -280,10 +276,10 @@ function answerBtnHandler(event)
   setlist_users({});
   let filtered_data=[]
   wsdata.forEach(user=>{
-    if(selectedGender==null || selectedGender=="Any"){
+    if(selectedGender===null || selectedGender==="Any"){
       filtered_data.push(user)
     }
-    else if(selectedGender==user['gender']){
+    else if(selectedGender===user['gender']){
       filtered_data.push(user)
     }
   })
@@ -291,7 +287,7 @@ function answerBtnHandler(event)
  } 
 
  useEffect(()=>{
-if (wsdata?.type==['users_info']){
+if (wsdata?.type==='users_info'){
   handleUpdateOnlineUsers(wsdata['data']);
 }
  },[selectedGender,wsdata])
@@ -301,19 +297,19 @@ function handleDisconnectedCall(){
 }
 
 useEffect(()=>{
-if(remotemediaaccess==false && wsdata?.type=='call_accepted'){
+if(remotemediaaccess===false && wsdata?.type==='call_accepted'){
   setremotemediaaccess(true);
 }
-if(remotemediaaccess==true && wsdata?.type=='call_disconnected_by_user'){
+if(remotemediaaccess===true && wsdata?.type==='call_disconnected_by_user'){
   setremotemediaaccess(false)
 }
-if(remotemediaaccess==true && peerConnection.current==null){
+if(remotemediaaccess===true && peerConnection.current===null){
   setremotemediaaccess(false)
 }
-if(remotemediaaccess==true && wsdata?.type=='user_leave'){
+if(remotemediaaccess===true && wsdata?.type==='user_leave'){
   setremotemediaaccess(false)
 }
-},[remotemediaaccess])
+},[remotemediaaccess,wsdata?.type])
  function handleStartCall(event) {
   const buttonText = event.target.innerText;
   if (buttonText==="Start"){
