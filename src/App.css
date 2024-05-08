@@ -589,3 +589,86 @@ font-weight: bold;
  .answer_buttons button:nth-child(2){
   background-color: red;
  }
+.btn_on_video{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items:center ;
+  gap:10px;
+}
+.btn_on_video button{
+  width: 100%;
+  padding:1rem 2rem;
+  border-radius: 10px;
+  transition: all .2s ease-in;
+}
+.btn_on_video button:nth-child(1){
+  background-color:#f0c14b;
+  border-color:#f0c14b ;
+}
+.btn_on_video button:nth-child(1):hover{
+  background-color:#9c7f36;
+  border-color:#9c7f36 ;
+}
+.btn_on_video button:nth-child(2){
+  background-color:#B0E0E6;
+  border-color:#B0E0E6;
+}
+.btn_on_video button:nth-child(2):hover{
+  background-color:#89bbc1;
+  border-color:#89bbc1 ;
+}
+@media screen and (max-width: 768px) {
+  .btn_on_video button {
+    padding: 0.5rem 1rem;
+  }
+  .btn_on_video{
+    flex-wrap: wrap;
+  }
+}
+.signup_btns_modal{
+  margin-top: 3%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+.signup_btns_modal button{
+ width: 100%;
+ padding: 10px;
+ border-radius: 10px
+}
+.signup_btns_modal button:nth-child(1){
+background-color:#89bbc1;
+border-color: #89bbc1;
+}
+
+.signup_btns_modal button:nth-child(2){
+background-color:red ;
+border-color:red ;
+}
+.login_btns_modal{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+.login_btns_modal  button{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  border-radius: 10px;
+  width:96%;
+}
+.login_btns_modal button:nth-child(1){
+  background-color:#d1ae54;
+  border-color: #d1ae54;
+  }
+  
+.login_btns_modal button:nth-child(2){
+  background-color:red ;
+  border-color:red ;
+}
