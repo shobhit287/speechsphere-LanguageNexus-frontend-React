@@ -13,9 +13,9 @@ import { accept_answer } from '../webRTC/acceptanswer';
 import remote_tone from '../static/audio/remote_tone.mp3';
 import { useDispatch,useSelector } from 'react-redux';
 import { check_authenticate_status } from '../redux/slices/authenticated';
+import {signup_modal_handle,login_modal_handle} from '../redux/slices/model_popUp';
 import { toast } from 'react-toastify';
 function Home() {
- 
   const [ws, setWs] = useState(null);
   const peerConnection=useRef(null);
   const dispatch = useDispatch();
@@ -42,13 +42,14 @@ function Home() {
    let newws=null;
    if (authenticated_status && newws===null){
     const ws_url=process.env.REACT_APP_WS_URL;
-    const ws_base_url=process.env.REACT_APP_IP_WS_BASE_URL;
+    const ws_base_url=window.location.host === 'localhost:3000' ? process.env.REACT_APP_WS_BASE_URL : process.env.REACT_APP_IP_WS_BASE_URL;
     const token=localStorage.getItem('token');
+    if (token){
     newws=new WebSocket(`${ws_base_url}${ws_url}/${token}`)
     setWs(newws);
-    ws_reference.current=newws;
+    ws_reference.current=newws;}
    }
-   else if(!authenticated_status && newws) {
+   else if (ws && !authenticated_status) {
       newws.close()
       setWs(null);
     
@@ -68,7 +69,7 @@ function Home() {
      }
    
   };
-  // eslint-disable-next-line
+  //eslint-disable-next-line 
   },[authenticated_status])
 
 //recieve data   
@@ -77,6 +78,8 @@ if (ws){
     let data_recieve=JSON.parse(event['data'])
     setwsdata(data_recieve)
     console.log("FKJFK",event)
+
+
     if (data_recieve['type']==="users_info"){
         handleUpdateOnlineUsers(data_recieve['data'])
     }
@@ -239,23 +242,32 @@ function answerBtnHandler(event)
   );
   const onlineUsers_menu = (
     <Menu onClick={handleOnlineUserClick}>
-      {list_users.map(option => (
-        <Menu.Item key={option.id} >
-          {option.status?<>
-          <div style={{display:"flex", justifyContent:'space-between',alignItems:'center'}}>
-           <span>{option.name}</span>
-           <h1 style={{color:"orange"}}>&#x2022;</h1>
-           </div>
-          </>:<>
-          <div style={{display:"flex", justifyContent:'space-between',alignItems:'center'}}>
-           <span >{option.name}</span>
-           <h1 style={{color:"green"}}>&#x2022;</h1>
-           </div>
-          </>}
-    </Menu.Item>
-      ))}
+      {list_users.length > 0 ? (
+        list_users.map(option => (
+          <Menu.Item key={option.id} >
+            {option.status ? (
+              <>
+                <div style={{display:"flex", justifyContent:'space-between',alignItems:'center'}}>
+                  <span>{option.name}</span>
+                  <h1 style={{color:"orange"}}>&#x2022;</h1>
+                </div>
+              </>
+            ) : (
+              <>
+                <div style={{display:"flex", justifyContent:'space-between',alignItems:'center'}}>
+                  <span>{option.name}</span>
+                  <h1 style={{color:"green"}}>&#x2022;</h1>
+                </div>
+              </>
+            )}
+          </Menu.Item>
+        ))
+      ) : (
+        <Menu.Item disabled>No user found</Menu.Item>
+      )}
     </Menu>
   );
+  
   function handleGenderClick(value){
     setSelectedGender(value.key);
   }
@@ -295,6 +307,7 @@ function handleDisconnectedCall(){
 }
 
 useEffect(()=>{
+
 if(remotemediaaccess===false && wsdata?.type==='call_accepted'){
   setremotemediaaccess(true);
 }
@@ -353,10 +366,10 @@ if(remotemediaaccess===true && wsdata?.type==='user_leave'){
     }
   }
    else {
-    // Handle case when user is not authenticated
+    dispatch(login_modal_handle(true));
   }}
   else{
-    if(peerConnection.current.currentRemoteDescription)
+    if(peerConnection?.current?.currentRemoteDescription)
       {
           
           peerConnection.current.close();
@@ -399,7 +412,7 @@ function handleCallCancelled(){
   
       <video ref={remote_video}  autoPlay playsInline style={{display:remotemediaaccess?"grid":"none"}}></video>
     {remotemediaaccess ? (<></>
-    ) : (<>
+    ) : authenticated_status?<>
       <div style={{ position: 'relative', textAlign: 'center' }}>
       <video src={noise} autoplay></video>
       <span style={{
@@ -415,7 +428,24 @@ function handleCallCancelled(){
       </span>
     </div>
       </>
-    )}
+    :<>
+      <div style={{ position: 'relative', textAlign: 'center' }}>
+      <video src={noise} autoplay></video>
+      <div className='btn_on_video' style={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        color:'white',
+        padding: '10px',
+        fontSize:'1.5em'
+      }}>
+        <button className='login_btn_on_video' onClick={()=>dispatch(login_modal_handle(true))}>Login</button>
+        <button className='signup_btn_on_video' onClick={()=>dispatch(signup_modal_handle(true))}>Signup</button>
+      </div>
+    </div>
+   
+    </>}
  
    
     </div>

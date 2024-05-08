@@ -2,7 +2,7 @@ import logo from './static/img/logo.png';
 import './App.css';
 import { NavLink, Route, Routes } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { FaUser } from "react-icons/fa";
+import {  FaUser } from "react-icons/fa";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Home from './components/Home';
@@ -16,15 +16,16 @@ import axios from "axios"
 import {  useEffect, useState} from 'react';
 import { useDispatch, useSelector} from 'react-redux';
 import { check_authenticate_status } from './redux/slices/authenticated';
+import {signup_modal_handle,login_modal_handle} from './redux/slices/model_popUp';
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(check_authenticate_status());
   }, [dispatch]);
   const authenticated_status = useSelector(state => state.authenticationSlice.isAuthenticated);
-  const [loginModal,setLoginModal]=useState(false);
-  const [SignupModal,setSignupModal]=useState(false);
-  const BASE_URL=process.env.REACT_APP_IP_BASE_URL;
+  const loginModal = useSelector(state => state.modalSlice.login_modal);
+  const SignupModal = useSelector(state => state.modalSlice.signup_modal);
+  const BASE_URL=window.location.hostname === 'localhost' ? process.env.REACT_APP_BASE_URL : process.env.REACT_APP_IP_BASE_URL;
   const [signup_details,setsignup_details]=useState({
     "signup_firstname":"",
     "signup_lastname":"",
@@ -43,19 +44,21 @@ function App() {
     .then(response=>{
       if (response.data.status){
          toast.success("SignUp Successfully")
-         setSignupModal(false);
-         setLoginModal(true);
+         dispatch(signup_modal_handle(false));
+         dispatch(login_modal_handle(true));
       }
     })
     .catch((error)=>{
        if (error?.response?.status===400){
         toast.error("Error While Signing Up")
+        dispatch(signup_modal_handle(false));
        }
        else if( error?.response?.status===409){
         toast.error(error.response.data.message)
        }
        else{
         toast.error("Internal Server Error")
+        dispatch(signup_modal_handle(false));
        }
     })
   
@@ -68,7 +71,7 @@ function App() {
         toast.success("Login Successfullly")
         localStorage.setItem('token',response.data.token)
         dispatch(check_authenticate_status());
-        setLoginModal(false)
+        dispatch(login_modal_handle(false));
        }
        else{
         toast.error("Error while authenticating the user")
@@ -76,12 +79,14 @@ function App() {
     }).catch(error=>{
       if(error?.response?.status===401){
         toast.error("Invalid Credentials")
+        dispatch(login_modal_handle(false));
        }
        else if(error?.response?.status===400){
         toast.error("Error while authenticating the user")
        }
        else{
         toast.error("Internal Server Error")
+        dispatch(login_modal_handle(false));
        }
     })
    
@@ -95,16 +100,17 @@ function App() {
     setlogin_details({...login_details,[name]:value});
   }
   function triggerLogin(){
-    setSignupModal(false);
-    setLoginModal(true);
+    dispatch(signup_modal_handle(false));
+    dispatch(login_modal_handle(true));
   }
   function triggerSignUp(){
-    setLoginModal(false);
-    setSignupModal(true);
+    dispatch(login_modal_handle(false));
+    dispatch(signup_modal_handle(true));
   }
   function logOutHandler(){
     localStorage.removeItem('token')
     dispatch(check_authenticate_status());
+    toast.success("LogOut Success")
   }
   const user_items= (
      <Menu >
@@ -133,10 +139,10 @@ function App() {
       <FaUser style={{ fontSize: '30px',marginRight:"20px",cursor:"pointer" }}/>
       </Space>
   </Dropdown></>):(<><div className='signup_loginbtn'>
-        <button  className="nav_login" onClick={()=>setLoginModal(true)}>
+        <button  className="nav_login" onClick={()=>dispatch(login_modal_handle(true))}>
         Login
       </button>
-        <button  className="nav_signup" onClick={()=>setSignupModal(true)}>
+        <button  className="nav_signup" onClick={()=>dispatch(signup_modal_handle(true))}>
         Signup
       </button>
        </div></>)}
@@ -145,7 +151,7 @@ function App() {
    </div> 
    <div className='modal_body'>
    {/* login Modal */}
-   <Modal show={loginModal} onHide={()=>setLoginModal(false)}>
+   <Modal show={loginModal} onHide={()=>dispatch(login_modal_handle(false))}>
         <Modal.Header closeButton>
           <Modal.Title>Login</Modal.Title>
         </Modal.Header>
@@ -164,15 +170,17 @@ function App() {
             <button type='submit'>Login</button>           
             </div>
           </form>
-          <button  onClick={triggerSignUp}>SignUp</button>
-          <Button variant="secondary" onClick={()=>setLoginModal(false)}>
+          <div className='signup_btns_modal'>
+          <button  onClick={triggerSignUp} className='signup_btn_modal'>SignUp</button>
+          <Button variant="secondary" onClick={()=>dispatch(login_modal_handle(false))} className='signup_btn_close_modal'>
             Close
           </Button>
+          </div>
         </Modal.Body>
       </Modal>
 
    {/* signup Modal */}
-   <Modal show={SignupModal} onHide={()=>setSignupModal(false)}>
+   <Modal show={SignupModal} onHide={()=>dispatch(signup_modal_handle(false))}>
         <Modal.Header closeButton>
           <Modal.Title>Signup</Modal.Title>
         </Modal.Header>
@@ -227,14 +235,16 @@ function App() {
         
       </div>
      <div className='signup_btn'>
-      <button type='submit'>Signup</button>
-      <button  onClick={triggerLogin}>Login</button>
-      <Button variant="secondary"  onClick={()=>setSignupModal(false)} >
-            Close
-          </Button>
-     </div>
+      <button type='submit'>Signup</button></div>
+      
+     
         </form>
-
+        <div className='login_btns_modal'>
+        <button  onClick={triggerLogin} className='login_btn'>Login</button>
+        <Button variant="secondary" className='signup_btn'  onClick={()=>dispatch(signup_modal_handle(false))} >
+          Close
+        </Button>
+        </div>
         </Modal.Body>
       </Modal>
    </div>
