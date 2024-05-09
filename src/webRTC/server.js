@@ -1,4 +1,4 @@
-export const iceServers = {
+export const server = {
     iceServers: [
         {
             urls: ["stun:bn-turn1.xirsys.com"]
