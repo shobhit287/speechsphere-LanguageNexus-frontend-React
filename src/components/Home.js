@@ -76,6 +76,16 @@ function Home() {
 
 //recieve data   
 if (ws){
+  ws.onclose=async function(event){
+    if (ws_reference.current && peerConnection?.current?.currentRemoteDescription){
+      let data={'type':'user_leave','remote_id':remote_user_id?.current?.user_id}
+      ws_reference.current.send(JSON.stringify(data))
+      newws?.close();
+      ws_reference.current=null;
+      setWs(null);
+     }
+
+  }
   ws.onmessage=async function (event){
     let data_recieve=JSON.parse(event['data'])
     setwsdata(data_recieve)

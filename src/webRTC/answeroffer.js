@@ -1,29 +1,13 @@
 export async function answer_offer_remote(peerConnection,server,ws,local_video_ref,remote_video_ref,remote_user,offer_data){
-    let Connection = new RTCPeerConnection({iceServers: [
-        {
-          urls: "stun:stun.relay.metered.ca:80",
-        },
-        {
-          urls: "turn:global.relay.metered.ca:80",
-          username: "5bc265146469de02b6e0324c",
-          credential: "MZTnljpPqcgC47cs",
-        },
-        {
-          urls: "turn:global.relay.metered.ca:80?transport=tcp",
-          username: "5bc265146469de02b6e0324c",
-          credential: "MZTnljpPqcgC47cs",
-        },
-        {
-          urls: "turn:global.relay.metered.ca:443",
-          username: "5bc265146469de02b6e0324c",
-          credential: "MZTnljpPqcgC47cs",
-        },
-        {
-          urls: "turns:global.relay.metered.ca:443?transport=tcp",
-          username: "5bc265146469de02b6e0324c",
-          credential: "MZTnljpPqcgC47cs",
-        },
-    ],
+    const response = 
+    await fetch("https://speechsphere.metered.live/api/v1/turn/credentials?apiKey=028fad1b2daad62402a032033aa82b2178d5");
+  
+  // Saving the response in the iceServers array
+  const iceServers = await response.json();
+  
+  // Using the iceServers array in the RTCPeerConnection method
+  var Connection = new RTCPeerConnection({
+    iceServers: iceServers
   });
     peerConnection.current=Connection
     let localstream = local_video_ref.current.srcObject;
