@@ -1,8 +1,5 @@
 export async function create_offer_remote(peerConnection, server, ws, local_video_ref, remote_video_ref, selectedUser) {
-    const configuration = {
-        iceServers: server.iceServers
-    };
-    let Connection = new RTCPeerConnection(configuration);
+    let Connection = new RTCPeerConnection(server);
     peerConnection.current = Connection;
     let localstream = local_video_ref.current.srcObject;
     let remotestream = new MediaStream();
