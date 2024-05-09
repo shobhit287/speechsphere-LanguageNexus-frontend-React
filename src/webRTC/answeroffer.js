@@ -39,15 +39,14 @@ export async function answer_offer_remote(peerConnection,server,ws,local_video_r
     };
     
     let icecandidate = true;
-    peerConnection.current.onicecandidate = async (event) => {
-        if (event.candidate && icecandidate) {
-            icecandidate = false;
+    peerConnection.onicecandidate = (event) => {
+        if (event.candidate) {
             const offer = {
                 type: 'answer_offer',
-                remote_id: remote_user, 
-                offer_sdp: peerConnection.current.localDescription
+                offer_sdp: peerConnection.localDescription,
+                // Assuming you have a way to identify the remote user
+                remote_id: offer_data.remote_id,
             };
-            console.log("Answer OFFER", offer);
             ws.send(JSON.stringify(offer));
         }
     };
