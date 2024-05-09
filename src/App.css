@@ -86,6 +86,46 @@ nav {
   background-color:rgb(42, 162, 177);
   border: solid rgb(42, 162, 177);
 }
+.hamburger_menu {
+  display: none;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 30px; 
+  height: 24px; 
+  cursor: pointer; 
+}
+.overlay_menu {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  height: 100vh;
+  right: 0;
+ 
+  width: 30vw;
+  justify-content: space-evenly;
+  align-items: center;
+  background-color:lightgrey; 
+  z-index: 1000;
+  transition: all 7s ease; 
+}
+
+
+.overlay_menu a{
+  font-size: 1.5rem;
+text-decoration: none;
+color:#5f5f5f;
+}
+.mobile_menu {
+  width: 100%;
+  height: 3px; 
+  background-color: #000; 
+  border-radius: 2px; 
+}
+
+
+.hamburger_menu:hover .mobile_menu {
+  background-color: #555; 
+}
 .main_page{
   display:flex;
   flex-direction: column;
@@ -112,17 +152,20 @@ nav {
 }
 .left_interaction {
   display: grid;
-  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
   width: 50%;
   column-gap: 1em;
   row-gap: 1em;
+  white-space: nowrap;
 }
 
-.startcall_btn, .gender_button,.onlineUsers_button {
-  padding: 1em 2em; 
-  font-size: 1.5em; 
+.startcall_btn, .gender_button, .onlineUsers_button {
+  padding: 1em;
+  font-size: 1.5em;
   border-radius: 10px;
-  
+  white-space: nowrap;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .startcall_btn {
@@ -135,8 +178,6 @@ nav {
 }
 
 .gender_button {
-  padding: 1em 5em; 
-  white-space: nowrap;
   color: black;
   background-color: #dec587;
 }
@@ -145,20 +186,43 @@ nav {
   background-color: #998d70;
 }
 
-/* Media queries for responsiveness */
+/* Media queries for responsive design */
 @media screen and (max-width: 768px) {
-  .startcall_btn, .gender_button,.onlineUsers_button {
-    padding: 0.8em 1.2em; /* Adjust padding for smaller screens */
-    font-size: 0.8em; /* Adjust font-size for smaller screens */
+  .startcall_btn, .gender_button, .onlineUsers_button {
+    font-size: 1em; /* Adjust font size for smaller screens */
+    padding: 0.5em; /* Adjust padding for smaller screens */
   }
 }
+@media screen and (max-width: 780px) {
+ .right_nav{
+  display: none;
+ }
+ .hamburger_menu{
+  display: flex;
+ }
+}
+@media screen and (max-width: 495px) {
+.interaction_section{
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.left_interaction{
+  width: 100%;
+}
+.container{
+  width: 100%;
+}
+.right_interaction{
+  width: 100% !important;
+}
+.video_container video{
+  height: 200px;
+}
+}
+/* Media queries for responsiveness */
 
-@media screen and (max-width: 576px) {
-  .startcall_btn, .gender_button,.onlineUsers_button {
-    padding: 0.6em 1em; /* Adjust padding for even smaller screens */
-    font-size: 0.5em; /* Adjust font-size for even smaller screens */
-  }
-}
 .right_interaction{
   width: 50%;
   box-shadow: 0px 0px 5px 0px;
@@ -436,8 +500,8 @@ font-weight: bold;
 }
 
 .about_section{
-  padding:5px;
-  font-size: 2em;
+  padding:10px;
+  font-size: 3.5vw;
   margin-block: 10px;
  box-shadow: 0px 0px 10px 0px ;
  border-radius: 10px;
@@ -457,6 +521,17 @@ font-weight: bold;
   gap:10px;
   
 }
+@media only screen and (max-width:768px){
+  .contactus_upperContainer{
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .contactus_upperright{
+    width: 100%;
+  }
+}
 .contactus_upperimg img{
   max-width: 100%;
   height: auto;
@@ -464,7 +539,7 @@ font-weight: bold;
 .contactus_upperright{
   display: flex;
   flex-direction: column;
-  width: 940px;
+ justify-content: space-between;
   gap:10px;
 }
 .contactus_upperright h3{
@@ -543,12 +618,16 @@ font-weight: bold;
   gap: 10px; 
   border-radius: 10px;
   box-shadow: 0px 0px 10px 0px;
-  width: 30%; 
+  width: 30vw; 
   height: 250px;
   padding: 20px; 
 }
+.offeredUser_window_popup h2{
+  text-align: center;
+  white-space: normal; 
+}
 .offeredUser_window_popup button{
-  padding:15px 30px;
+  padding:1rem;
   border-radius: 10px;
   background-color: red;
   color:white
@@ -559,7 +638,7 @@ font-weight: bold;
 .remote_window{
   position: absolute;
   padding: 10px;
-  top:30px;
+  top:40px;
   right:20px;
   background-color:darkgray;
   display: flex;
@@ -569,8 +648,11 @@ font-weight: bold;
   gap:10px;
   border-radius: 10px;
   box-shadow: 0px 0px 10px 0px;
-  width:30%;
   height:400px;
+}
+.remote_window h3 {
+  text-align: center;
+  white-space: normal; 
 }
 .answer_buttons{
   display: flex;
@@ -580,7 +662,7 @@ font-weight: bold;
   gap:10px;
 }
 .answer_buttons button{
-  padding:10px 40px;
+  padding:1rem;
   border-radius: 10px;
  }
  .answer_buttons button:nth-child(1){

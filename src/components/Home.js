@@ -41,20 +41,22 @@ function Home() {
   useEffect(()=>{
    let newws=null;
    if (authenticated_status && newws===null){
+   
     const ws_url=process.env.REACT_APP_WS_URL;
-    const ws_base_url=window.location.host === 'localhost:3000' ? process.env.REACT_APP_WS_BASE_URL : process.env.REACT_APP_IP_WS_BASE_URL;
+    const ws_base_url=window.location.hostname === 'localhost' ? process.env.REACT_APP_WS_BASE_URL : process.env.REACT_APP_IP_WS_BASE_URL;
     const token=localStorage.getItem('token');
     if (token){
     newws=new WebSocket(`${ws_base_url}${ws_url}/${token}`)
     setWs(newws);
     ws_reference.current=newws;}
    }
-   else if (ws && !authenticated_status) {
+   else if (newws && !authenticated_status) {
       newws.close()
       setWs(null);
     
    }
    return () => {
+   
     if (ws_reference.current && peerConnection?.current?.currentRemoteDescription){
       let data={'type':'user_leave','remote_id':remote_user_id?.current?.user_id}
       ws_reference.current.send(JSON.stringify(data))
@@ -144,6 +146,7 @@ function cancelled_by_offered_user(){
 function handleCallRejected(rejected_by){
 set_offeredUser_window_popup(false);
 senderAudio.current.pause();
+setStartBtnText("Start")
 toast.error(`Call Rejected By ${rejected_by}`)
 }
 
@@ -162,12 +165,13 @@ setTimeout(() => {
   setRemoteCall(false)
 }, 25000);
 }
+
   const [localmediaaccess,setlocalmediaaccess]=useState(false);
   const [remotemediaaccess,setremotemediaaccess]=useState(false);
   useEffect(() => {
     let mediaStream;
     function accessmedia() {
-      navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+      navigator?.mediaDevices?.getUserMedia({ video: true, audio: true })
       .then(stream => {
           setlocalmediaaccess(true);
           if (local_video.current) {
@@ -196,17 +200,31 @@ setTimeout(() => {
   }, []);
   
 useState(()=>{
-setlocalmediaaccess(true)
+if(navigator?.mediaDevices?.getUserMedia({ video: true, audio: true })){
+
+  setlocalmediaaccess(true)
+}
+else{
+  setlocalmediaaccess(false)
+}
 },[localmediaaccess])
 
 function answerBtnHandler(event)
 {
   const buttonText = event.target.innerText;
   if (buttonText==="Answer"){
+   if(local_video.current){ 
    answer_offer_remote(peerConnection,server,ws,local_video,remote_video,remote_user_id.current['user_id'],remote_user_answer.current)
    setmessages([]);
    setremotemediaaccess(true);
-   setStartBtnText("Stop")
+   setStartBtnText("Stop")}
+   else{
+    toast.error("Error While Accessing Media ")
+    setRemoteCall(false);
+    RemoteAudio.current.pause();
+    let data={'type':'rejected','user_id':remote_user_id.current['user_id']}
+    ws.send(JSON.stringify(data))
+   }
   }
   else{
     setRemoteCall(false);
@@ -270,6 +288,7 @@ function answerBtnHandler(event)
   
   function handleGenderClick(value){
     setSelectedGender(value.key);
+    setSelectedUser();
   }
   function handleOnlineUserClick(event){
     const userId = event.key;
@@ -438,7 +457,7 @@ function handleCallCancelled(){
         transform: 'translate(-50%, -50%)',
         color:'white',
         padding: '10px',
-        fontSize:'1.5em'
+        fontSize:'2.3vw'
       }}>
         <button className='login_btn_on_video' onClick={()=>dispatch(login_modal_handle(true))}>Login</button>
         <button className='signup_btn_on_video' onClick={()=>dispatch(signup_modal_handle(true))}>Signup</button>
@@ -462,7 +481,7 @@ function handleCallCancelled(){
         transform: 'translate(-50%, -50%)',
         color:'white',
         padding: '10px',
-        fontSize:'1.5em'
+        fontSize:'2.3vw'
       }}>
         Error While Accessing User Media
       </span>
@@ -528,7 +547,7 @@ function handleCallCancelled(){
 
 
   </div>
-  {offeredUser_window_popup?<> <div className='offeredUser_window_popup' style={{display: offeredUser_window_popup ? 'flex' : 'none' }}>
+  {offeredUser_window_popup?<> <div className='offeredUser_window_popup' style={{display: offeredUser_window_popup ? 'flex' : 'flex' }}>
       <h2 style={{ textAlign: "center", fontSize: "24px" }}>{selectedUser.name}</h2>
       <h3 style={{ textAlign: "center", fontSize: "18px" }}>Calling</h3>
       <button style={{ fontSize: "18px" }} onClick={handleCallCancelled}>Cancel</button>
@@ -540,7 +559,7 @@ function handleCallCancelled(){
   <button onClick={(event)=>answerBtnHandler(event)} >Answer</button>
   <button onClick={(event)=>answerBtnHandler(event)}>Reject</button>
  </div></div></>:<></>}
- 
+
  
   
 

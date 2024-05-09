@@ -1,8 +1,8 @@
 import logo from './static/img/logo.png';
 import './App.css';
-import { NavLink, Route, Routes } from 'react-router-dom';
+import { Link, NavLink, Route, Routes } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {  FaUser } from "react-icons/fa";
+import {   FaUser } from "react-icons/fa";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Home from './components/Home';
@@ -22,6 +22,7 @@ function App() {
   useEffect(() => {
     dispatch(check_authenticate_status());
   }, [dispatch]);
+  const [showHamburgerContent,setshowHamburgerContent]=useState(false);
   const authenticated_status = useSelector(state => state.authenticationSlice.isAuthenticated);
   const loginModal = useSelector(state => state.modalSlice.login_modal);
   const SignupModal = useSelector(state => state.modalSlice.signup_modal);
@@ -112,6 +113,14 @@ function App() {
     dispatch(check_authenticate_status());
     toast.success("LogOut Success")
   }
+  function HamburgerContentHandler(){
+    if(showHamburgerContent){
+      setshowHamburgerContent(false)
+    }
+    else{
+      setshowHamburgerContent(true)
+    }
+  }
   const user_items= (
      <Menu >
       <Menu.Item key="log_out">
@@ -123,6 +132,7 @@ function App() {
   );
   return (
    <div className="container">
+  
    <div className="navbar">
     <nav>
          <div className="left_nav">
@@ -147,8 +157,31 @@ function App() {
       </button>
        </div></>)}
       </div>
+      <div className='hamburger_menu' onClick={HamburgerContentHandler}>
+    <span className='mobile_menu'></span>
+    <span className='mobile_menu'></span>
+    <span className='mobile_menu'></span>
+    </div>
     </nav>
    </div> 
+   <div class="overlay_menu" id="overlayMenu"  style={{display: showHamburgerContent ? "flex" : "none"}}>
+   {authenticated_status?(<> <Dropdown overlay={ user_items} trigger={['click']}>
+      <Space>
+      <FaUser style={{ fontSize: '30px',marginRight:"20px",cursor:"pointer" }}/>
+      </Space>
+  </Dropdown></>):(<><div className='signup_loginbtn' style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center"}}>
+        <button  className="nav_login" onClick={()=>dispatch(login_modal_handle(true))}>
+        Login
+      </button>
+        <button  className="nav_signup"  onClick={()=>dispatch(signup_modal_handle(true))}>
+        Signup
+      </button>
+       </div></>)}
+   <Link to="/" onClick={HamburgerContentHandler}>Home</Link>
+    <Link to="/about" onClick={HamburgerContentHandler}>About</Link>
+    <Link to="/contact" onClick={HamburgerContentHandler}>Contact</Link>
+    <Link to="help" onClick={HamburgerContentHandler}>Help</Link>
+   </div>
    <div className='modal_body'>
    {/* login Modal */}
    <Modal show={loginModal} onHide={()=>dispatch(login_modal_handle(false))}>
@@ -248,7 +281,7 @@ function App() {
         </Modal.Body>
       </Modal>
    </div>
-   
+  
     <Routes>
       <Route path="/" element={<Home/>}/>
       <Route path="/about" element={<About/>}/>
