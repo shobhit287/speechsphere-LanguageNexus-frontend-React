@@ -40,8 +40,8 @@ export async function create_offer_remote(peerConnection, server, ws, local_vide
 
     let icecandidate = true;
     const iceCandidateHandler = async (event) => {
-        if (event.candidate) {
-            // icecandidate = false;
+        if (event.candidate && icecandidate) {
+            icecandidate = false;
             const offer = {
                 type: 'create_offer',
                 remote_id: selectedUser['user_id'], 
