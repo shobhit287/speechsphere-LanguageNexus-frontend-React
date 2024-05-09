@@ -80,7 +80,6 @@ if (ws){
     if (ws_reference.current && peerConnection?.current?.currentRemoteDescription){
       let data={'type':'user_leave','remote_id':remote_user_id?.current?.user_id}
       ws_reference.current.send(JSON.stringify(data))
-      newws?.close();
       ws_reference.current=null;
       setWs(null);
      }
