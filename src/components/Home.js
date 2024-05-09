@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import blackscreen from '../static/videos/blackscreen.mp4';
-import noise from '../static/videos/noise.mp4';
+import blackscreen from '../static/img/blackscreen.png'
+import noise from '../static/img/noise.jpg';
 import { FaMale } from "react-icons/fa";
 import { server } from '../webRTC/server';
 import { FaFemale } from "react-icons/fa";
@@ -433,7 +433,7 @@ function handleCallCancelled(){
     {remotemediaaccess ? (<></>
     ) : authenticated_status?<>
       <div style={{ position: 'relative', textAlign: 'center' }}>
-      <video src={noise} autoplay></video>
+      <video poster={noise} autoplay></video>
       <span style={{
         position: 'absolute',
         top: '50%',
@@ -449,7 +449,7 @@ function handleCallCancelled(){
       </>
     :<>
       <div style={{ position: 'relative', textAlign: 'center' }}>
-      <video src={noise} autoplay></video>
+      <video poster={noise} autoplay></video>
       <div className='btn_on_video' style={{
         position: 'absolute',
         top: '50%',
@@ -473,7 +473,7 @@ function handleCallCancelled(){
     {localmediaaccess?<><video ref={local_video} autoPlay playsInline muted /> 
     </>:<>
     <div style={{ position: 'relative', textAlign: 'center' }}>
-      <video src={blackscreen} autoPlay ></video>
+      <video poster={blackscreen} autoPlay ></video>
       <span style={{
         position: 'absolute',
         top: '50%',
