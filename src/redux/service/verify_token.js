@@ -1,5 +1,5 @@
 import axios from "axios";
-const BASE_URL = window.location.hostname === 'localhost' ? process.env.REACT_APP_BASE_URL : process.env.REACT_APP_IP_BASE_URL;;
+const BASE_URL = window.location.host === 'localhost:3000' ? process.env.REACT_APP_BASE_URL : process.env.REACT_APP_IP_BASE_URL;
 
 export function verify_token() {
     return new Promise((resolve, reject) => {
