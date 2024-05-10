@@ -267,6 +267,7 @@ function answerBtnHandler(event)
   else{
     setRemoteCall(false);
     RemoteAudio.current.pause();
+    setStartBtnText("Start")
     //send to remote user
     let data={'type':'rejected','user_id':remote_user_id.current['user_id']}
     ws.send(JSON.stringify(data))
