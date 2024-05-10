@@ -81,6 +81,7 @@ if (ws){
       let data={'type':'user_leave','remote_id':remote_user_id?.current?.user_id}
       ws_reference.current.send(JSON.stringify(data))
       ws_reference.current=null;
+      setremotemediaaccess(false);
       setWs(null);
      }
 
