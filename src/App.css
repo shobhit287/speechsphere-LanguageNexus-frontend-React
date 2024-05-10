@@ -754,3 +754,23 @@ border-color:red ;
   background-color:red ;
   border-color:red ;
 }
+.mic_btn{
+  border: none;
+  background-color:#ccc;
+  border-radius: 200px;
+  padding: 20px;
+  font-size: 2.3vw; 
+}
+.mic_btn:hover{
+  background-color:#855555; 
+}
+.camera_btn{
+  border: none;
+  background-color:#ccc;
+  border-radius: 200px;
+  padding: 20px;
+  font-size: 2.3vw; 
+}
+.camera_btn:hover{
+  background-color:#855555; 
+}

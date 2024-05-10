@@ -1,5 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import blackscreen from '../static/img/blackscreen.png'
+import { RiCameraFill } from "react-icons/ri";
+import { RiCameraOffFill } from "react-icons/ri";
+import { FaMicrophoneSlash } from "react-icons/fa";
+import { FaMicrophone } from "react-icons/fa";
 import noise from '../static/img/noise.jpg';
 import { FaMale } from "react-icons/fa";
 import { server } from '../webRTC/server';
@@ -29,6 +33,7 @@ function Home() {
   const[remoteUserName,setRemoteUserName]=useState(null)
   const[wsdata,setwsdata]=useState();
   const local_video=useRef(null);
+  const [notMuted,setNotMuted]=useState(true);
   const remote_video=useRef(null);
   const remote_user_id=useRef(null);
   const remote_user_answer=useRef(null);
@@ -43,7 +48,7 @@ function Home() {
    if (authenticated_status && newws===null){
    
     const ws_url=process.env.REACT_APP_WS_URL;
-    const ws_base_url=window.location.host === 'localhost:3000' ? process.env.REACT_APP_WS_BASE_URL : process.env.REACT_APP_IP_WS_BASE_URL;
+    const ws_base_url=window.location.hostname === 'localhost' ? process.env.REACT_APP_WS_BASE_URL : process.env.REACT_APP_IP_WS_BASE_URL;
     const token=localStorage.getItem('token');
     if (token){
     newws=new WebSocket(`${ws_base_url}${ws_url}/${token}`)
@@ -76,16 +81,6 @@ function Home() {
 
 //recieve data   
 if (ws){
-  ws.onclose=async function(event){
-    if (ws_reference.current && peerConnection?.current?.currentRemoteDescription){
-      let data={'type':'user_leave','remote_id':remote_user_id?.current?.user_id}
-      ws_reference.current.send(JSON.stringify(data))
-      ws_reference.current=null;
-      setremotemediaaccess(false);
-      setWs(null);
-     }
-
-  }
   ws.onmessage=async function (event){
     let data_recieve=JSON.parse(event['data'])
     setwsdata(data_recieve)
@@ -175,7 +170,40 @@ setTimeout(() => {
   setRemoteCall(false)
 }, 25000);
 }
-
+const [isCameraaccess,setIsCameraAccess]=useState(true);
+const [micShow,setMicShow]=useState(false);
+ function MuteMic(){
+  if (local_video) {
+    local_video.current.srcObject.getAudioTracks().forEach(track => {
+      track.enabled = false;
+    });
+    setNotMuted(false);
+  }
+ } 
+function UnmuteMic(){
+  if (local_video) {
+    local_video.current.srcObject.getAudioTracks().forEach(track => {
+      track.enabled = true;
+    });
+    setNotMuted(true);
+  }
+}
+function HideCamera(){
+  if (local_video) {
+    local_video.current.srcObject.getVideoTracks().forEach(track => {
+      track.enabled = false;
+    });
+    setIsCameraAccess(false);
+  }
+}
+function UnhideCamera(){
+  if (local_video) {
+    local_video.current.srcObject.getVideoTracks().forEach(track => {
+      track.enabled = true;
+    });
+    setIsCameraAccess(true);
+  }
+}
   const [localmediaaccess,setlocalmediaaccess]=useState(false);
   const [remotemediaaccess,setremotemediaaccess]=useState(false);
   useEffect(() => {
@@ -435,146 +463,172 @@ function handleCallCancelled(){
   let data={'type':'cancelled_by_offered_user','remote_user_id':selectedUser['user_id']}
   ws.send(JSON.stringify(data))
 }
-  return(<div class="main_page">
-  <div className="video_container">
-  <div className="remote_video">
-  
-      <video ref={remote_video}  autoPlay playsInline style={{display:remotemediaaccess?"grid":"none"}}></video>
-    {remotemediaaccess ? (<></>
-    ) : authenticated_status?<>
-      <div style={{ position: 'relative', textAlign: 'center' }}>
-      <video poster={noise} autoplay></video>
-      <span style={{
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        color:'white',
-        padding: '10px',
-        fontSize:'1.5em'
-      }}>
-        Press Start To Connect
-      </span>
-    </div>
-      </>
-    :<>
-      <div style={{ position: 'relative', textAlign: 'center' }}>
-      <video poster={noise} autoplay></video>
-      <div className='btn_on_video' style={{
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        color:'white',
-        padding: '10px',
-        fontSize:'2.3vw'
-      }}>
-        <button className='login_btn_on_video' onClick={()=>dispatch(login_modal_handle(true))}>Login</button>
-        <button className='signup_btn_on_video' onClick={()=>dispatch(signup_modal_handle(true))}>Signup</button>
-      </div>
-    </div>
-   
-    </>}
- 
-   
-    </div>
+return(<div class="main_page">
+<div className="video_container">
+<div className="remote_video">
 
-    <div className='user_video'>
-    {localmediaaccess?<><video ref={local_video} autoPlay playsInline muted /> 
-    </>:<>
+    <video ref={remote_video}  autoPlay playsInline style={{display:remotemediaaccess?"grid":"none"}}></video>
+  {remotemediaaccess ? (<></>
+  ) : authenticated_status?<>
     <div style={{ position: 'relative', textAlign: 'center' }}>
-      <video poster={blackscreen} autoPlay ></video>
-      <span style={{
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        color:'white',
-        padding: '10px',
-        fontSize:'2.3vw'
-      }}>
-        Error While Accessing User Media
-      </span>
-    </div>
-    </>
-
-   }
-    
-    
-    </div>
-  </div>
-
-
-  <div className="interaction_section">
-   <div className='left_interaction'>
-    <button className='startcall_btn' onClick={(event)=>handleStartCall(event)} style={{backgroundColor:startBtnText==="Stop"?"red":""}}>{startBtnText==="Start"?<>Start</>:<>Stop</>}</button>
-    <Dropdown overlay={gender_menu} trigger={['click']}>
-    <button className='gender_button' style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-  <Space>
-    <span style={{ textAlign: "center" }}>
-      Filter Gender : {selectedGender ? 
-        selectedGender === "Male" ? 
-          <>Male <FaMale /></> : 
-          selectedGender === "Female" ? 
-            <>Female <FaFemale /></> : 
-            <>Any <FaMale /> / <FaFemale /></>
-        :
-        <> <FaMale /> / <FaFemale /></>
-      }
+    <video poster={noise} autoplay></video>
+    <span style={{
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      color:'white',
+      padding: '10px',
+      fontSize:'1.5em'
+    }}>
+      Press Start To Connect
     </span>
-  </Space>
-</button>
-    </Dropdown>
-
-    <Dropdown overlay={onlineUsers_menu} trigger={['click']}>
-      <button className='onlineUsers_button'>
-        <Space>
-          <span style={{textAlign:"center"}}>Choose Partner : {selectedUser?selectedUser.name:<><FaMale></FaMale>/<FaFemale></FaFemale></>}</span>
-        </Space>
-      </button>
-    </Dropdown>
- 
-   </div>
-   <div className='right_interaction'>
-    <div className='msg_body'>
-    <div class="all_msgs">
-    {messages.map((message, index) => (
-  <div key={index} className={message.className}>
-    <span>{message.msg_text}</span>
   </div>
-))}
-     
-      </div>
-      <div className='msg_form'>
-        <form onSubmit={(event)=>send_msg(event)}>
-          <input type='text' placeholder='Enter Your Message' value={msg_text.msg_text} required onChange={(e)=>msg_text_handler(e)} name='msg_text'></input>
-          <button style={{backgroundColor:remotemediaaccess?"#389A73":"#829b91" , cursor:remotemediaaccess?"pointer":"not-allowed"}} disabled={remotemediaaccess?false:true}>Send</button>
-        </form>
-      </div>
+    </>
+  :<>
+    <div style={{ position: 'relative', textAlign: 'center' }}>
+    <video poster={noise} autoplay></video>
+    <div className='btn_on_video' style={{
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      color:'white',
+      padding: '10px',
+      fontSize:'2.3vw'
+    }}>
+      <button className='login_btn_on_video' onClick={()=>dispatch(login_modal_handle(true))}>Login</button>
+      <button className='signup_btn_on_video' onClick={()=>dispatch(signup_modal_handle(true))}>Signup</button>
     </div>
-
-   </div>
-
-
   </div>
-  {offeredUser_window_popup?<> <div className='offeredUser_window_popup' style={{display: offeredUser_window_popup ? 'flex' : 'flex' }}>
-      <h2 style={{ textAlign: "center", fontSize: "24px" }}>{selectedUser.name}</h2>
-      <h3 style={{ textAlign: "center", fontSize: "18px" }}>Calling</h3>
-      <button style={{ fontSize: "18px" }} onClick={handleCallCancelled}>Cancel</button>
-    </div></>:<></>}
+ 
+  </>}
+
+ 
+  </div>
+
+  <div className='user_video'>
+  {localmediaaccess?(
+<>
+  <div
+    style={{ position: 'relative', textAlign: 'center' }}
+    onMouseEnter={() => setMicShow(true)}
+    onMouseLeave={() => setMicShow(false)}
+  >
+    <video ref={local_video} autoPlay playsInline muted></video>
+    {micShow && (
+      <div style={{ position: 'absolute', bottom: '10px', left: '50%', transform: 'translateX(-50%)', display:'flex',gap:'20px' }}>
+        {notMuted ? (
+          <button className='mic_btn' onClick={MuteMic}>
+            <span><FaMicrophone /></span>
+          </button>
+        ) : (
+          <button className='mic_btn' onClick={UnmuteMic}>
+            <span><FaMicrophoneSlash /></span>
+          </button>
+        )}
+
+        {
+          isCameraaccess?(<button className='camera_btn' onClick={HideCamera}>
+            <span><RiCameraFill /></span>
+          </button>):(<button className='camera_btn' onClick={UnhideCamera}>
+            <span><RiCameraOffFill /></span>
+          </button>)
+        }
+      </div>
+    )}
+  </div>
+</>
+):<>
+  <div style={{ position: 'relative', textAlign: 'center' }}>
+    <video poster={blackscreen} autoPlay ></video>
+    <span style={{
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      color:'white',
+      padding: '10px',
+      fontSize:'2.3vw'
+    }}>
+      Error While Accessing User Media
+    </span>
+  </div>
+  </>
+
+ }
+  
+  
+  </div>
+</div>
+
+
+<div className="interaction_section">
+ <div className='left_interaction'>
+  <button className='startcall_btn' onClick={(event)=>handleStartCall(event)} style={{backgroundColor:startBtnText==="Stop"?"red":""}}>{startBtnText==="Start"?<>Start</>:<>Stop</>}</button>
+  <Dropdown overlay={gender_menu} trigger={['click']}>
+  <button className='gender_button' style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+<Space>
+  <span style={{ textAlign: "center" }}>
+    Filter Gender : {selectedGender ? 
+      selectedGender === "Male" ? 
+        <>Male <FaMale /></> : 
+        selectedGender === "Female" ? 
+          <>Female <FaFemale /></> : 
+          <>Any <FaMale /> / <FaFemale /></>
+      :
+      <> <FaMale /> / <FaFemale /></>
+    }
+  </span>
+</Space>
+</button>
+  </Dropdown>
+
+  <Dropdown overlay={onlineUsers_menu} trigger={['click']}>
+    <button className='onlineUsers_button'>
+      <Space>
+        <span style={{textAlign:"center"}}>Choose Partner : {selectedUser?selectedUser.name:<><FaMale></FaMale>/<FaFemale></FaFemale></>}</span>
+      </Space>
+    </button>
+  </Dropdown>
+
+ </div>
+ <div className='right_interaction'>
+  <div className='msg_body'>
+  <div class="all_msgs">
+  {messages.map((message, index) => (
+<div key={index} className={message.className}>
+  <span>{message.msg_text}</span>
+</div>
+))}
+   
+    </div>
+    <div className='msg_form'>
+      <form onSubmit={(event)=>send_msg(event)}>
+        <input type='text' placeholder='Enter Your Message' value={msg_text.msg_text} required onChange={(e)=>msg_text_handler(e)} name='msg_text'></input>
+        <button style={{backgroundColor:remotemediaaccess?"#389A73":"#829b91" , cursor:remotemediaaccess?"pointer":"not-allowed"}} disabled={remotemediaaccess?false:true}>Send</button>
+      </form>
+    </div>
+  </div>
+
+ </div>
+
+
+</div>
+{offeredUser_window_popup?<> <div className='offeredUser_window_popup' style={{display: offeredUser_window_popup ? 'flex' : 'flex' }}>
+    <h2 style={{ textAlign: "center", fontSize: "24px" }}>{selectedUser.name}</h2>
+    <h3 style={{ textAlign: "center", fontSize: "18px" }}>Calling</h3>
+    <button style={{ fontSize: "18px" }} onClick={handleCallCancelled}>Cancel</button>
+  </div></>:<></>}
 
 {remoteCall?<> <div className="remote_window" >
-  <h3  style={{textAlign:"center"}}>{remoteUserName}</h3>
-  <div class="answer_buttons">
-  <button onClick={(event)=>answerBtnHandler(event)} >Answer</button>
-  <button onClick={(event)=>answerBtnHandler(event)}>Reject</button>
- </div></div></>:<></>}
+<h3  style={{textAlign:"center"}}>{remoteUserName}</h3>
+<div class="answer_buttons">
+<button onClick={(event)=>answerBtnHandler(event)} >Answer</button>
+<button onClick={(event)=>answerBtnHandler(event)}>Reject</button>
+</div></div></>:<></>}
 
- 
-  
-
-
-  </div>)
+</div>)
 }
 
 export default Home;
