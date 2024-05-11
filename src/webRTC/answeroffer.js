@@ -23,7 +23,6 @@ export async function answer_offer_remote(peerConnection,server,ws,local_video_r
                 remote_id: remote_user, 
                 offer_sdp: peerConnection.current.localDescription
             };
-            console.log("Answer OFFER", offer);
             ws.send(JSON.stringify(offer));
         }
     };

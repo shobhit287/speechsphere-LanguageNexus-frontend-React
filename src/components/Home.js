@@ -46,7 +46,6 @@ function Home() {
   useEffect(()=>{
    let newws=null;
    if (authenticated_status && newws===null){
-   
     const ws_url=process.env.REACT_APP_WS_URL;
     const ws_base_url=window.location.hostname === 'localhost' ? process.env.REACT_APP_WS_BASE_URL : process.env.REACT_APP_IP_WS_BASE_URL;
     const token=localStorage.getItem('token');
@@ -162,7 +161,6 @@ toast.error(`Call Rejected By ${rejected_by}`)
 
 
 function handleRecievedOffer(data){
-  console.log(data)
 remote_user_id.current={'user_id':data['offered_user_id']} 
 remote_user_answer.current=data['offer']
 setRemoteUserName(data['offered_by'])
@@ -223,7 +221,6 @@ function UnhideCamera(){
           }
         
       }).catch(error => {
-        console.log("ERROR:", error);
         setlocalmediaaccess(false)
         toast.error("Error while accessing media device");
         
@@ -459,7 +456,6 @@ function send_msg(event) {
   ws.send(JSON.stringify(new_msg));
   const updatedMessages = [...messages, { className: 'sender_msg', msg_text: msg_text.msg_text }];
   setmessages(updatedMessages);
-  console.log("MESSAGES:", updatedMessages);
   setmsg_text({ msg_text: "" });
 }
 function handleCallCancelled(){
