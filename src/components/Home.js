@@ -81,12 +81,17 @@ function Home() {
 
 //recieve data   
 if (ws){
+  ws.onClose=async function(){
+    if (ws_reference.current && peerConnection?.current?.currentRemoteDescription){
+      let data={'type':'user_leave','remote_id':remote_user_id?.current?.user_id}
+      ws_reference.current.send(JSON.stringify(data))
+      ws_reference.current=null;
+      setWs(null);
+     }
+  }
   ws.onmessage=async function (event){
     let data_recieve=JSON.parse(event['data'])
     setwsdata(data_recieve)
-    console.log("FKJFK",event)
-
-
     if (data_recieve['type']==="users_info"){
         handleUpdateOnlineUsers(data_recieve['data'])
     }
