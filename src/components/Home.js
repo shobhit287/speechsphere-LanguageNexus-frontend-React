@@ -45,6 +45,7 @@ function Home() {
   const authenticated_status = useSelector(state => state.authenticationSlice.isAuthenticated);
   useEffect(()=>{
    let newws=null;
+
    if (authenticated_status && newws===null){
     const ws_url=process.env.REACT_APP_WS_URL;
     const ws_base_url=window.location.hostname === 'localhost' ? process.env.REACT_APP_WS_BASE_URL : process.env.REACT_APP_IP_WS_BASE_URL;
@@ -80,7 +81,7 @@ function Home() {
 
 //recieve data   
 if (ws){
-  ws.onClose=async function(){
+  ws.onclose=async function(){
     if (ws_reference.current && peerConnection?.current?.currentRemoteDescription){
       let data={'type':'user_leave','remote_id':remote_user_id?.current?.user_id}
       ws_reference.current.send(JSON.stringify(data))
