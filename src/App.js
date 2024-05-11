@@ -8,7 +8,6 @@ import Modal from 'react-bootstrap/Modal';
 import Home from './components/Home';
 import About from './components/About';
 import Contact from './components/Contact';
-import Help from './components/Help';
 import {toast} from 'react-toastify';
 import { IoIosLogOut } from "react-icons/io";
 import { Dropdown, Space,Menu} from 'antd';
@@ -143,7 +142,6 @@ function App() {
         <NavLink to="/">Home</NavLink>
         <NavLink to="/about">About</NavLink>
         <NavLink to="/contact">Contact</NavLink>
-        <NavLink to="help">Help</NavLink>
         {authenticated_status?(<> <Dropdown overlay={ user_items} trigger={['click']}>
       <Space>
       <FaUser style={{ fontSize: '30px',marginRight:"20px",cursor:"pointer" }}/>
@@ -180,7 +178,6 @@ function App() {
    <Link to="/" onClick={HamburgerContentHandler}>Home</Link>
     <Link to="/about" onClick={HamburgerContentHandler}>About</Link>
     <Link to="/contact" onClick={HamburgerContentHandler}>Contact</Link>
-    <Link to="help" onClick={HamburgerContentHandler}>Help</Link>
    </div>
    <div className='modal_body'>
    {/* login Modal */}
@@ -286,7 +283,6 @@ function App() {
       <Route path="/" element={<Home/>}/>
       <Route path="/about" element={<About/>}/>
       <Route path="/contact" element={<Contact/>}/>
-      <Route path="/help" element={<Help/>}/>
     </Routes>
    </div>
   );

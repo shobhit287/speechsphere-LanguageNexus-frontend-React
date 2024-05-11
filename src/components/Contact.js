@@ -1,6 +1,17 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
+import { check_authenticate_status } from '../redux/slices/authenticated';
+import { useDispatch,useSelector } from 'react-redux';
+import {toast} from 'react-toastify';
+import {login_modal_handle} from '../redux/slices/model_popUp';
 import contactUs from "../static/img/contactUs.png"
+import axios from "axios";
 function Contact(){
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(check_authenticate_status());
+      }, [dispatch]);
+    const authenticated_status = useSelector(state => state.authenticationSlice.isAuthenticated);
+    const BASE_URL=window.location.host === 'localhost:3000' ? process.env.REACT_APP_BASE_URL : process.env.REACT_APP_IP_BASE_URL;
     const [contactFormDetails,setContactFormDetails]=useState({
         "contactus_name":"",
         "contactus_email":"",
@@ -8,6 +19,29 @@ function Contact(){
     })
     function contactFormHandler(e){
         e.preventDefault();
+        if(authenticated_status){
+            axios.post(`${BASE_URL}/queryform`,contactFormDetails)
+            .then(response=>{
+                if(response.status){
+                    toast.success("Sent Successfully")
+                    setContactFormDetails({
+                        "contactus_name":"",
+                        "contactus_email":"",
+                        "contactus_description":""
+                    })
+                }
+                else{
+                    toast.success("Internal Server Error")
+                }
+
+            }).catch(error=>{
+                toast.success("Internal Server Error")
+            })
+        }
+        else{
+            dispatch(login_modal_handle(true))
+        }
+
     }
     function changeHandler(e){
         const {name,value}=e.target;
