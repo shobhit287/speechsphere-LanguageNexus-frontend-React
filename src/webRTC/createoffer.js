@@ -19,11 +19,14 @@ export async function create_offer_remote(peerConnection, server, ws, local_vide
     const iceCandidateHandler = async (event) => {
         if (event.candidate && icecandidate) {
             if (event.candidate.type === "relay" && icecandidate) {
+                console.log("TURN SERVER")
                 icecandidate=false
                 sendOffer();
             }
              else if (event.candidate.type === "srflx" && icecandidate) {
                 icecandidate=false
+                console.log("STUN SERVER")
+
                 sendOffer();
             }
         }
