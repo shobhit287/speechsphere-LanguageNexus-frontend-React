@@ -1,7 +1,6 @@
 export async function answer_offer_remote(peerConnection,server,ws,local_video_ref,remote_video_ref,remote_user,offer_data){
   
   var Connection = new RTCPeerConnection(server)
-    console.log("server",server)
     peerConnection.current=Connection
     let localstream = local_video_ref.current.srcObject;
     let remotestream = new MediaStream();
