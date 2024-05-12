@@ -27,6 +27,15 @@ export async function create_offer_remote(peerConnection, server, ws, local_vide
             ws.send(JSON.stringify(offer));
             peerConnection.current.removeEventListener('icecandidate', iceCandidateHandler);
         }
+        if(event.candidate.type === "srflx"){
+            console.log("The STUN server is reachable!");
+            console.log(`   Your Public IP Address is: ${event.candidate.address}`);
+        }
+    
+        // If a relay candidate was found, notify that the TURN server works!
+        if(event.candidate.type === "relay"){
+            console.log("The TURN server is reachable !");
+        }
     };
 
     peerConnection.current.onicecandidate = iceCandidateHandler;
