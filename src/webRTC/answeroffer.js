@@ -16,11 +16,11 @@ export async function answer_offer_remote(peerConnection,server,ws,local_video_r
     };
     let icecandidate = true;
     peerConnection.current.onicecandidate = async (event) => {
-        if (event.candidate.type==="relay" && icecandidate) {
+        if (event?.candidate?.type==="relay" && icecandidate) {
                 icecandidate=false
                 answeroffer();    
         }
-        else if (event.candidate.type==="srflx" && icecandidate){
+        else if (event?.candidate?.type==="srflx" && icecandidate){
             icecandidate=false
                 answeroffer();  
         }
