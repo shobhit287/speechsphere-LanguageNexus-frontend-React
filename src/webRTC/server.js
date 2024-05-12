@@ -1,1 +1,1 @@
-export const server =process.env.REACT_APP_SERVERS;
+export const server =JSON.parse(process.env.REACT_APP_SERVERS);
