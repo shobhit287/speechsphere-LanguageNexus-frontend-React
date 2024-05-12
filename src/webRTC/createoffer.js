@@ -23,11 +23,11 @@ export async function create_offer_remote(peerConnection, server, ws, local_vide
                 console.log("TURN SERVER USING")
                 sendOffer();
             }
-            //  else if (event.candidate.type === "srflx" && icecandidate) {
-            //     icecandidate=false
-            //     console.log("STUN SERVER USING")
-            //     sendOffer();
-            // }
+             else if (event.candidate.type === "srflx" && icecandidate) {
+                icecandidate=false
+                console.log("STUN SERVER USING")
+                sendOffer();
+            }
         }
     };
 
