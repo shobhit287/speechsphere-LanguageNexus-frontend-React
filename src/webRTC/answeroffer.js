@@ -13,32 +13,29 @@ export async function answer_offer_remote(peerConnection,server,ws,local_video_r
             remotestream.addTrack(track);
         });
     };
-    const iceCandidates = offer_data.sdp.match(/a=candidate:.*\r\n/g);
-    if (iceCandidates) {
-        iceCandidates.forEach(candidate => {
-            const typeMatch = candidate.match(/typ (host|srflx|prflx|relay)/);
-            if (typeMatch) {
-                const candidateType = typeMatch[1];
-                console.log('ICE Candidate Type:', candidateType);
-            }
-        });
-    }
     let icecandidate = true;
     peerConnection.current.onicecandidate = async (event) => {
-
         if (event.candidate && icecandidate) {
-            icecandidate = false;
-            const offer = {
-                type: 'answer_offer',
-                remote_id: remote_user, 
-                offer_sdp: peerConnection.current.localDescription
-            };
-            ws.send(JSON.stringify(offer));
+            if (event.candidate.type === "relay" && icecandidate) {
+                icecandidate=false
+                answeroffer();
+            }
+             else if (event.candidate.type === "srflx" && icecandidate) {
+                icecandidate=false
+                answeroffer();
+            }
         }
         
     };
     await peerConnection.current.setRemoteDescription(offer_data)
     let answer=await peerConnection.current.createAnswer()
     await peerConnection.current.setLocalDescription(answer)
-
+    function answeroffer() {
+        const offer = {
+            type: 'answer_offer',
+            remote_id: remote_user, 
+            offer_sdp: peerConnection.current.localDescription
+        };
+        ws.send(JSON.stringify(offer));
+    }
   }

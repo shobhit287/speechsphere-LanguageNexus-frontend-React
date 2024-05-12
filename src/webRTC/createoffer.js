@@ -1,6 +1,6 @@
 export async function create_offer_remote(peerConnection, server, ws, local_video_ref, remote_video_ref, selectedUser) {
   
-  var Connection = new RTCPeerConnection(server);
+    var Connection = new RTCPeerConnection(server);
     peerConnection.current = Connection;
     let localstream = local_video_ref.current.srcObject;
     let remotestream = new MediaStream();
@@ -15,26 +15,17 @@ export async function create_offer_remote(peerConnection, server, ws, local_vide
     };
 
     let icecandidate = true;
+
     const iceCandidateHandler = async (event) => {
         if (event.candidate && icecandidate) {
-            icecandidate = false;
-            const offer = {
-                type: 'create_offer',
-                remote_id: selectedUser['user_id'], 
-                status: selectedUser['status'], 
-                offer_sdp: peerConnection.current.localDescription
-            };
-            ws.send(JSON.stringify(offer));
-            peerConnection.current.removeEventListener('icecandidate', iceCandidateHandler);
-        }
-        if(event.candidate.type === "srflx"){
-            console.log("The STUN server is reachable!");
-            console.log(`   Your Public IP Address is: ${event.candidate.address}`);
-        }
-    
-        // If a relay candidate was found, notify that the TURN server works!
-        if(event.candidate.type === "relay"){
-            console.log("The TURN server is reachable !");
+            if (event.candidate.type === "relay" && icecandidate) {
+                icecandidate=false
+                sendOffer();
+            }
+             else if (event.candidate.type === "srflx" && icecandidate) {
+                icecandidate=false
+                sendOffer();
+            }
         }
     };
 
@@ -47,5 +38,15 @@ export async function create_offer_remote(peerConnection, server, ws, local_vide
     } catch (error) {
         console.error('Error creating offer or setting local description:', error);
         return false;
+    }
+
+    function sendOffer() {
+        const offer = {
+            type: 'create_offer',
+            remote_id: selectedUser['user_id'], 
+            status: selectedUser['status'], 
+            offer_sdp: peerConnection.current.localDescription
+        };
+        ws.send(JSON.stringify(offer));
     }
 }
