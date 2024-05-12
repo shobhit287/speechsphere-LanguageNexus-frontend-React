@@ -20,10 +20,12 @@ export async function create_offer_remote(peerConnection, server, ws, local_vide
         if (event.candidate && icecandidate) {
             if (event.candidate.type === "relay" && icecandidate) {
                 icecandidate=false
+                console.log("TURN SERVER USING")
                 sendOffer();
             }
              else if (event.candidate.type === "srflx" && icecandidate) {
                 icecandidate=false
+                console.log("STUN SERVER USING")
                 sendOffer();
             }
         }
