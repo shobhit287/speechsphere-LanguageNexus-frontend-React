@@ -15,8 +15,10 @@ export async function answer_offer_remote(peerConnection,server,ws,local_video_r
     };
     let icecandidate = true;
     peerConnection.current.onicecandidate = async (event) => {
-        if(event.candidate){
-        answeroffer();  }
+      if (event.candidate.type==="relay" ||  event.candidate.type==="srflx" && icecandidate) {
+        sendOffer();
+        icecandidate=false;
+     }
     };
  
     await peerConnection.current.setRemoteDescription(offer_data)
