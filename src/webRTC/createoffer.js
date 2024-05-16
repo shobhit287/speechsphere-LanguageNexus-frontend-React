@@ -22,10 +22,7 @@ export async function create_offer_remote(peerConnection, server, ws, local_vide
                 icecandidate=false
                 sendOffer();
             }
-             else if (event.candidate.type === "srflx" && icecandidate) {
-                icecandidate=false
-                sendOffer();
-            }
+           
         }
     };
 

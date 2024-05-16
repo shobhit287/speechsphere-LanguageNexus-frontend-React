@@ -19,10 +19,7 @@ export async function answer_offer_remote(peerConnection,server,ws,local_video_r
                 icecandidate=false
                 answeroffer();    
         }
-        else if (event?.candidate?.type==="srflx" && icecandidate){
-            icecandidate=false
-                answeroffer();  
-        }
+    
         
     };
     await peerConnection.current.setRemoteDescription(offer_data)
