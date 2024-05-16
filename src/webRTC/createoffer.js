@@ -19,7 +19,7 @@ export async function create_offer_remote(peerConnection, server, ws, local_vide
     const iceCandidateHandler = async (event) => {
         if (event.candidate.type==="relay"  && icecandidate) {
            sendOffer();
-           
+           icecandidate=false;
         }
     };
     peerConnection.oniceconnectionstatechange = function(event) {
