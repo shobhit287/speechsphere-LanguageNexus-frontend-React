@@ -27,7 +27,16 @@ export async function create_offer_remote(peerConnection, server, ws, local_vide
            
         }
     };
-
+    peerConnection.oniceconnectionstatechange = function(event) {
+        console.log("ICE connection state change:", peerConnection.iceConnectionState);
+        if (peerConnection.iceConnectionState === "connected" ||
+            peerConnection.iceConnectionState === "completed") {
+          // Connection is established
+        } else if (peerConnection.iceConnectionState === "failed" ||
+                   peerConnection.iceConnectionState === "disconnected") {
+          // Connection failed or disconnected
+        }
+      };
     peerConnection.current.onicecandidate = iceCandidateHandler;
 
     try {

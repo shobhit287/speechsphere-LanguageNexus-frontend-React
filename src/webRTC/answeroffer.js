@@ -25,6 +25,16 @@ export async function answer_offer_remote(peerConnection,server,ws,local_video_r
     
         
     };
+    peerConnection.oniceconnectionstatechange = function(event) {
+        console.log("ICE connection state change:", peerConnection.iceConnectionState);
+        if (peerConnection.iceConnectionState === "connected" ||
+            peerConnection.iceConnectionState === "completed") {
+          // Connection is established
+        } else if (peerConnection.iceConnectionState === "failed" ||
+                   peerConnection.iceConnectionState === "disconnected") {
+          // Connection failed or disconnected
+        }
+      };
     await peerConnection.current.setRemoteDescription(offer_data)
     let answer=await peerConnection.current.createAnswer()
     await peerConnection.current.setLocalDescription(answer)
