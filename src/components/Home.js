@@ -161,19 +161,22 @@ toast.error(`Call Rejected By ${rejected_by}`)
 }
 
 
-function handleRecievedOffer(data){
-remote_user_id.current={'user_id':data['offered_user_id']} 
-remote_user_answer.current=data['offer']
-setRemoteUserName(data['offered_by'])
-setRemoteCall(true)
-let remote_audio=new Audio(remote_tone);
-RemoteAudio.current=remote_audio;
-RemoteAudio.current.play();
-setTimeout(() => {
-  RemoteAudio.current.pause();
-  setRemoteCall(false)
-}, 25000);
+function handleRecievedOffer(data) {
+  if (!RemoteAudio.current || RemoteAudio.current.paused) {
+    remote_user_id.current = { 'user_id': data['offered_user_id'] };
+    remote_user_answer.current = data['offer'];
+    setRemoteUserName(data['offered_by']);
+    setRemoteCall(true);
+    let remote_audio = new Audio(remote_tone);
+    RemoteAudio.current = remote_audio;
+    RemoteAudio.current.play();
+    setTimeout(() => {
+      RemoteAudio.current.pause();
+      setRemoteCall(false);
+    }, 25000);
+  }
 }
+
 const [isCameraaccess,setIsCameraAccess]=useState(true);
 const [micShow,setMicShow]=useState(false);
  function MuteMic(){
