@@ -18,8 +18,10 @@ export async function create_offer_remote(peerConnection, server, ws, local_vide
 
     const iceCandidateHandler = async (event) => {
         if (event.candidate && icecandidate) {
+            console.log(event.icecandidate)
             if (event.candidate.type === "relay" && icecandidate) {
                 icecandidate=false
+                console.log("TURN SERVER USED");
                 sendOffer();
             }
            

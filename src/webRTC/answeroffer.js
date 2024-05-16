@@ -15,8 +15,11 @@ export async function answer_offer_remote(peerConnection,server,ws,local_video_r
     };
     let icecandidate = true;
     peerConnection.current.onicecandidate = async (event) => {
+        console.log(event.icecandidate)
         if (event?.candidate?.type==="relay" && icecandidate) {
                 icecandidate=false
+                console.log("TURN SERVER USED");
+
                 answeroffer();    
         }
     
