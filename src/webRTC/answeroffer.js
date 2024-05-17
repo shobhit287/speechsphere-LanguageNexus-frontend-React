@@ -20,11 +20,11 @@ export async function answer_offer_remote(peerConnection,server,ws,local_video_r
         icecandidate=false;
         answeroffer();
      }
-     if (event?.candidate?.type==="srflx" && icecandidate){
-      console.log("stun server used")
-      answeroffer();
-      icecandidate=false;
-  }
+  //    if (event?.candidate?.type==="srflx" && icecandidate){
+  //     console.log("stun server used")
+  //     answeroffer();
+  //     icecandidate=false;
+  // }
     };
  
     await peerConnection.current.setRemoteDescription(offer_data)

@@ -22,11 +22,11 @@ export async function create_offer_remote(peerConnection, server, ws, local_vide
            sendOffer();
            icecandidate=false;
         }
-        if (event?.candidate?.type=="srflx" && icecandidate){
-            console.log("stun server used")
-            sendOffer();
-            icecandidate=false;
-        }
+        // if (event?.candidate?.type=="srflx" && icecandidate){
+        //     console.log("stun server used")
+        //     sendOffer();
+        //     icecandidate=false;
+        // }
     };
     peerConnection.oniceconnectionstatechange = function(event) {
         console.log("ICE connection state change:", peerConnection.iceConnectionState);
