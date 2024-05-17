@@ -15,12 +15,12 @@ export async function answer_offer_remote(peerConnection,server,ws,local_video_r
     };
     let icecandidate = true;
     peerConnection.current.onicecandidate = async (event) => {
-      if (event.candidate.type==="relay" && icecandidate) {
+      if (event?.candidate?.type==="relay" && icecandidate) {
         console.log("turn server used")
         icecandidate=false;
         answeroffer();
      }
-     if (event.candidate.type==="srflx" && icecandidate){
+     if (event?.candidate?.type==="srflx" && icecandidate){
       console.log("stun server used")
       answeroffer();
       icecandidate=false;

@@ -17,12 +17,12 @@ export async function create_offer_remote(peerConnection, server, ws, local_vide
     let icecandidate = true;
 
     const iceCandidateHandler = async (event) => {
-        if (event.candidate.type==="relay"  && icecandidate) {
+        if (event?.candidate?.type==="relay"  && icecandidate) {
             console.log("turn server used")
            sendOffer();
            icecandidate=false;
         }
-        if (event.candidate.type=="srflx" && icecandidate){
+        if (event?.candidate?.type=="srflx" && icecandidate){
             console.log("stun server used")
             sendOffer();
             icecandidate=false;
