@@ -14,12 +14,15 @@ export async function create_offer_remote(peerConnection, server, ws, local_vide
         });
     };
 
-
+    let all_candidates=[]
     const iceCandidateHandler = async (event) => {
       if(event.candidate){
-        console.log(event.candidate?.type)
-        send_candidates(event.candidate)
-    }};
+        all_candidates.push(event.candidate)
+    }
+    else{
+        send_candidates(all_candidates)
+    }
+};
     peerConnection.current.onicecandidate = iceCandidateHandler;
 
     try {
@@ -45,7 +48,7 @@ export async function create_offer_remote(peerConnection, server, ws, local_vide
         const candidate_obj = {
             type: 'create_ice_candidates',
             remote_id: selectedUser['user_id'], 
-            candidates: candidate
+            candidates: all_candidates
         };
         ws.send(JSON.stringify(candidate_obj));
     }

@@ -133,26 +133,16 @@ if(peerConnection.current){
   addCandidate(peerConnection,data)
 }
 }
-const [icecandidatequeue,seticecandidatequeue]=useState([]);
+
+
 function handleCreateIceCandidates(data){
-  console.log("FKJFKJFKFJKFKFJFK",icecandidatequeue)
-if(peerConnection.current){
-  if(data){
-  addCandidate(peerConnection,data)}
-  if(icecandidatequeue){
-    sendRemainingIceCandidates()
-  }
+  if(peerConnection.current){
+  data.forEach(candidate=>{
+    addCandidate(peerConnection,candidate)
+  })}
 }
-else{
-  seticecandidatequeue([...icecandidatequeue,data])
-}
-}
-function sendRemainingIceCandidates() {
-  icecandidatequeue.forEach(candidate => {
-     addCandidate(peerConnection,candidate);
-  });
-  seticecandidatequeue([]);
-}
+
+
 function handleRecievedMsg(msg){
   let data_remote=[...messages,{'className':'recieved_msg','msg_text':msg}]
   setmessages(data_remote);
@@ -175,7 +165,6 @@ RemoteAudio.current.pause();
 function handleAcceptedCall(data)
 {
   accept_answer(peerConnection,data['answer_sdp'])
-  handleCreateIceCandidates(null);
   setremotemediaaccess(true);
   set_offeredUser_window_popup(false);
   senderAudio.current.pause();
