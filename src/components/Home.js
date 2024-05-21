@@ -79,6 +79,7 @@ function Home() {
   };
   //eslint-disable-next-line 
   },[authenticated_status])
+  
 
 //recieve data   
 if (ws){
@@ -139,7 +140,8 @@ function handleCreateIceCandidates(data){
   if(peerConnection.current){
   data.forEach(candidate=>{
     addCandidate(peerConnection,candidate)
-  })}
+  })
+}
 }
 
 
@@ -280,7 +282,6 @@ function answerBtnHandler(event)
   const buttonText = event.target.innerText;
   if (buttonText==="Answer"){
    if(local_video.current){ 
-  
    answer_offer_remote(peerConnection,server,ws,local_video,remote_video,remote_user_id.current['user_id'],remote_user_answer.current)
    setmessages([]);
    setremotemediaaccess(true);

@@ -28,21 +28,21 @@ export async function create_offer_remote(peerConnection, server, ws, local_vide
     try {
         const offer = await peerConnection.current.createOffer();
         await peerConnection.current.setLocalDescription(offer);
-        sendOffer()
+        sendOffer(offer)
         return true;
     } catch (error) {
         console.error('Error creating offer or setting local description:', error);
         return false;
     }
 
-    function sendOffer() {
-        const offer = {
+    function sendOffer(offer) {
+        const offer_sdp = {
             type: 'create_offer',
             remote_id: selectedUser['user_id'], 
             status: selectedUser['status'], 
-            offer_sdp: peerConnection.current.localDescription
+            offer_sdp: offer
         };
-        ws.send(JSON.stringify(offer));
+        ws.send(JSON.stringify(offer_sdp));
     }
     function send_candidates(candidate){
         const candidate_obj = {
