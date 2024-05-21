@@ -16,6 +16,7 @@ export async function answer_offer_remote(peerConnection,server,ws,local_video_r
 
     peerConnection.current.onicecandidate = async (event) => {
         if(event.candidate){
+            console.log(event.candidate?.type)
           send_answer_Candidates(event.candidate)
         }
     };

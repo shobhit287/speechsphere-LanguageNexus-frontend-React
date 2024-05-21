@@ -135,6 +135,7 @@ if(peerConnection.current){
 }
 const [icecandidatequeue,seticecandidatequeue]=useState([]);
 function handleCreateIceCandidates(data){
+  console.log("FKJFKJFKFJKFKFJFK",icecandidatequeue)
 if(peerConnection.current){
   if(data){
   addCandidate(peerConnection,data)}
