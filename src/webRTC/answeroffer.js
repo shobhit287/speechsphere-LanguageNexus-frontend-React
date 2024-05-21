@@ -15,22 +15,16 @@ export async function answer_offer_remote(peerConnection,server,ws,local_video_r
     };
     let icecandidate = true;
     peerConnection.current.onicecandidate = async (event) => {
-      if (event?.candidate?.type==="relay" && icecandidate) {
-        console.log("turn server used")
-        icecandidate=false;
-        answeroffer();
-     }
-     if (event?.candidate?.type==="srflx" && icecandidate){
-      console.log("stun server used")
-      answeroffer();
-      icecandidate=false;
-  }
+        if(event.candidate){
+          answeroffer();
+        
+      };
     };
     peerConnection.current.oniceconnectionstatechange = () => {
-      const state = peerConnection.iceConnectionState;
-      console.log('ICE connection state: ', state);
+      const state = peerConnection.current.iceConnectionState;
+      console.log('ICE connection state: ', state,peerConnection);
       
-      // Check if the connection is established
+      
       if (state === 'connected' || state === 'completed') {
         console.log('Peer connection established with remote user.');
       }
