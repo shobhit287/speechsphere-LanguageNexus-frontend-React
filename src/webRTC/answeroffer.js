@@ -20,11 +20,20 @@ export async function answer_offer_remote(peerConnection,server,ws,local_video_r
         icecandidate=false;
         answeroffer();
      }
-  //    if (event?.candidate?.type==="srflx" && icecandidate){
-  //     console.log("stun server used")
-  //     answeroffer();
-  //     icecandidate=false;
-  // }
+     if (event?.candidate?.type==="srflx" && icecandidate){
+      console.log("stun server used")
+      answeroffer();
+      icecandidate=false;
+  }
+    };
+    peerConnection.current.oniceconnectionstatechange = () => {
+      const state = peerConnection.iceConnectionState;
+      console.log('ICE connection state: ', state);
+      
+      // Check if the connection is established
+      if (state === 'connected' || state === 'completed') {
+        console.log('Peer connection established with remote user.');
+      }
     };
  
     await peerConnection.current.setRemoteDescription(offer_data)

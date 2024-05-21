@@ -22,20 +22,19 @@ export async function create_offer_remote(peerConnection, server, ws, local_vide
            sendOffer();
            icecandidate=false;
         }
-        // if (event?.candidate?.type=="srflx" && icecandidate){
-        //     console.log("stun server used")
-        //     sendOffer();
-        //     icecandidate=false;
-        // }
+        if (event?.candidate?.type=="srflx" && icecandidate){
+            console.log("stun server used")
+            sendOffer();
+            icecandidate=false;
+        }
     };
-    peerConnection.oniceconnectionstatechange = function(event) {
-        console.log("ICE connection state change:", peerConnection.iceConnectionState);
-        if (peerConnection.iceConnectionState === "connected" ||
-            peerConnection.iceConnectionState === "completed") {
-          // Connection is established
-        } else if (peerConnection.iceConnectionState === "failed" ||
-                   peerConnection.iceConnectionState === "disconnected") {
-          // Connection failed or disconnected
+    peerConnection.current.oniceconnectionstatechange = () => {
+        const state = peerConnection.iceConnectionState;
+        console.log('ICE connection state: ', state);
+        
+        // Check if the connection is established
+        if (state === 'connected' || state === 'completed') {
+          console.log('Peer connection established with remote user.');
         }
       };
     peerConnection.current.onicecandidate = iceCandidateHandler;
