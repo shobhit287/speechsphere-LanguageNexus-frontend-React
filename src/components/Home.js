@@ -135,8 +135,9 @@ if(peerConnection.current){
 }
 const [icecandidatequeue,seticecandidatequeue]=useState([]);
 function handleCreateIceCandidates(data){
-if(peerConnection.current && remotemediaaccess){
-  addCandidate(peerConnection,data)
+if(peerConnection.current){
+  if(data){
+  addCandidate(peerConnection,data)}
   if(icecandidatequeue){
     sendRemainingIceCandidates()
   }
@@ -173,6 +174,7 @@ RemoteAudio.current.pause();
 function handleAcceptedCall(data)
 {
   accept_answer(peerConnection,data['answer_sdp'])
+  handleCreateIceCandidates(null);
   setremotemediaaccess(true);
   set_offeredUser_window_popup(false);
   senderAudio.current.pause();
