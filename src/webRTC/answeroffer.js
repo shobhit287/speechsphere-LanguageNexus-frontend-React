@@ -13,27 +13,18 @@ export async function answer_offer_remote(peerConnection,server,ws,local_video_r
             remotestream.addTrack(track);
         });
     };
-    let icecandidate = true;
+
     peerConnection.current.onicecandidate = async (event) => {
-      console.log("EVENT CANDIDATE",event.candidate);
         if(event.candidate){
-          answeroffer();
-        
-      };
+          send_answer_Candidates(event.candidate)
+        }
     };
-    peerConnection.current.oniceconnectionstatechange = () => {
-      const state = peerConnection.current.iceConnectionState;
-      console.log('ICE connection state: ', state,peerConnection);
-      
-      
-      if (state === 'connected' || state === 'completed') {
-        console.log('Peer connection established with remote user.');
-      }
-    };
+
  
     await peerConnection.current.setRemoteDescription(offer_data)
     let answer=await peerConnection.current.createAnswer()
     await peerConnection.current.setLocalDescription(answer)
+    answeroffer()
     function answeroffer() {
         const offer = {
             type: 'answer_offer',
@@ -41,5 +32,13 @@ export async function answer_offer_remote(peerConnection,server,ws,local_video_r
             offer_sdp: peerConnection.current.localDescription
         };
         ws.send(JSON.stringify(offer));
+    }
+    function send_answer_Candidates(candidate) {
+        const candidate_obj = {
+            type: 'answer_ice_candidates',
+            remote_id: remote_user, 
+            candidates: candidate
+        };
+        ws.send(JSON.stringify(candidate_obj));
     }
   }

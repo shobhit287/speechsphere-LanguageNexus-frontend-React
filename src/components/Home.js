@@ -17,6 +17,7 @@ import { accept_answer } from '../webRTC/acceptanswer';
 import remote_tone from '../static/audio/remote_tone.mp3';
 import { useDispatch,useSelector } from 'react-redux';
 import { check_authenticate_status } from '../redux/slices/authenticated';
+import { addCandidate } from '../webRTC/addIceCandidate';
 import {signup_modal_handle,login_modal_handle} from '../redux/slices/model_popUp';
 import { toast } from 'react-toastify';
 function Home() {
@@ -119,7 +120,36 @@ if (ws){
     if (data_recieve['type']==="recieved_msg"){
        handleRecievedMsg(data_recieve['msg'])
     }
+    if (data_recieve['type']==="create_ice_candidates"){
+       handleCreateIceCandidates(data_recieve['candidate'])
+    }
+    if (data_recieve['type']==="answer_ice_candidates"){
+       handleAnswerIceCandidates(data_recieve['candidate'])
+    }
   }
+}
+function handleAnswerIceCandidates(data){
+if(peerConnection.current){
+  addCandidate(peerConnection,data)
+}
+}
+const [icecandidatequeue,seticecandidatequeue]=useState([]);
+function handleCreateIceCandidates(data){
+if(peerConnection.current && remotemediaaccess){
+  addCandidate(peerConnection,data)
+  if(icecandidatequeue){
+    sendRemainingIceCandidates()
+  }
+}
+else{
+  seticecandidatequeue([...icecandidatequeue,data])
+}
+}
+function sendRemainingIceCandidates() {
+  icecandidatequeue.forEach(candidate => {
+     addCandidate(peerConnection,candidate);
+  });
+  seticecandidatequeue([]);
 }
 function handleRecievedMsg(msg){
   let data_remote=[...messages,{'className':'recieved_msg','msg_text':msg}]

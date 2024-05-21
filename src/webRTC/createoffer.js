@@ -1,5 +1,3 @@
-import { all } from "axios";
-
 export async function create_offer_remote(peerConnection, server, ws, local_video_ref, remote_video_ref, selectedUser) {
   
     var Connection = new RTCPeerConnection(server);
@@ -16,30 +14,17 @@ export async function create_offer_remote(peerConnection, server, ws, local_vide
         });
     };
 
-    let icecandidate = true;
-    let all_candidate=[]
+
     const iceCandidateHandler = async (event) => {
-        let candidate = {
-            candidate: event.candidate,
-            description: peerConnection.current.localDescription
-        };
-        all_candidate.push(candidate)
       if(event.candidate){
-        sendOffer();
-      }
-    };
-    peerConnection.current.oniceconnectionstatechange = () => {
-        const state = peerConnection.current.iceConnectionState;
-        console.log('ICE connection state: ', state);
-        if (state === 'connected' || state === 'completed') {
-          console.log('Peer connection established with remote user.');
-        }
-      };
+        send_candidates(event.candidate)
+    }};
     peerConnection.current.onicecandidate = iceCandidateHandler;
 
     try {
         const offer = await peerConnection.current.createOffer();
         await peerConnection.current.setLocalDescription(offer);
+        sendOffer()
         return true;
     } catch (error) {
         console.error('Error creating offer or setting local description:', error);
@@ -47,7 +32,6 @@ export async function create_offer_remote(peerConnection, server, ws, local_vide
     }
 
     function sendOffer() {
-        console.log("CKDLFFKFF",all_candidate)
         const offer = {
             type: 'create_offer',
             remote_id: selectedUser['user_id'], 
@@ -55,5 +39,13 @@ export async function create_offer_remote(peerConnection, server, ws, local_vide
             offer_sdp: peerConnection.current.localDescription
         };
         ws.send(JSON.stringify(offer));
+    }
+    function send_candidates(candidate){
+        const candidate_obj = {
+            type: 'create_ice_candidates',
+            remote_id: selectedUser['user_id'], 
+            candidates: candidate
+        };
+        ws.send(JSON.stringify(candidate_obj));
     }
 }
