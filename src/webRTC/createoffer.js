@@ -17,6 +17,7 @@ export async function create_offer_remote(peerConnection, server, ws, local_vide
     let icecandidate = true;
 
     const iceCandidateHandler = async (event) => {
+        console.log("EVENT CANDIDATE",event.candidate);
       if(event.candidate){
         sendOffer();
       }
