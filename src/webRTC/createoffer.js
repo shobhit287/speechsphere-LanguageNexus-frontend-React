@@ -1,3 +1,5 @@
+import { all } from "axios";
+
 export async function create_offer_remote(peerConnection, server, ws, local_video_ref, remote_video_ref, selectedUser) {
   
     var Connection = new RTCPeerConnection(server);
@@ -15,10 +17,13 @@ export async function create_offer_remote(peerConnection, server, ws, local_vide
     };
 
     let icecandidate = true;
-
+    let all_candidate=[]
     const iceCandidateHandler = async (event) => {
-        console.log("EVENT CANDIDATE",event.candidate);
-        console.log("EVENT CANDIDATE desc",peerConnection.current.localDescription);
+        let candidate = {
+            candidate: event.candidate,
+            description: peerConnection.current.localDescription
+        };
+        all_candidate.push(candidate)
       if(event.candidate){
         sendOffer();
       }
@@ -42,6 +47,7 @@ export async function create_offer_remote(peerConnection, server, ws, local_vide
     }
 
     function sendOffer() {
+        console.log("CKDLFFKFF",all_candidate)
         const offer = {
             type: 'create_offer',
             remote_id: selectedUser['user_id'], 
