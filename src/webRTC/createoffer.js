@@ -19,9 +19,6 @@ export async function create_offer_remote(peerConnection, server, ws, local_vide
         console.log("KFJJFKFJKFJFK____FJFKJF",event.candidate) 
         all_candidate.push(event.candidate)
     }
-    else{
-        send_candidates(all_candidate)
-    }
 
 };
     peerConnection.current.onicecandidate = iceCandidateHandler;
@@ -29,7 +26,10 @@ export async function create_offer_remote(peerConnection, server, ws, local_vide
     try {
         const offer = await peerConnection.current.createOffer();
         await peerConnection.current.setLocalDescription(offer);
-        sendOffer()
+        setTimeout(() => {
+            sendOffer();
+            send_candidates(all_candidate);
+        }, 1000);
         return true;
     } catch (error) {
         console.error('Error creating offer or setting local description:', error);
