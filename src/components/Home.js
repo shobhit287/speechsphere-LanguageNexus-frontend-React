@@ -138,6 +138,7 @@ function handleAnswerIceCandidates(data){
   }
 }
 function handleCreateIceCandidates(data){
+  console.log("CREATE CANDIDATE BUT OUTSIDE PEER",data)
   if(peerConnection.current){
     console.log("CREATE CANDIDATE",data)
     data.forEach((candidate)=>{
