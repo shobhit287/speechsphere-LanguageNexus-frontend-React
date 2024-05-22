@@ -130,19 +130,20 @@ if (ws){
   }
 }
 function handleAnswerIceCandidates(data){
-if(peerConnection.current){
-  addCandidate(peerConnection,data)
+  if(peerConnection.current){
+    data.forEach((candidate)=>{
+      addCandidate(peerConnection,candidate)
+    })
+  }
 }
-}
-
-
 function handleCreateIceCandidates(data){
   if(peerConnection.current){
-  data.forEach(candidate=>{
-    addCandidate(peerConnection,candidate)
-  })
+    data.forEach((candidate)=>{
+      addCandidate(peerConnection,candidate)
+    })
+  }
 }
-}
+
 
 
 function handleRecievedMsg(msg){

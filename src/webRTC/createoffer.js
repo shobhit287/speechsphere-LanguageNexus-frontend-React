@@ -13,34 +13,34 @@ export async function create_offer_remote(peerConnection, server, ws, local_vide
             remotestream.addTrack(track);
         });
     };
-
-    let all_candidates=[]
+    let all_candidate=[]
     const iceCandidateHandler = async (event) => {
       if(event.candidate){
-        all_candidates.push(event.candidate)
+        all_candidate.push(event.candidate)
     }
     else{
-        send_candidates(all_candidates)
+        send_candidates(all_candidate)
     }
+
 };
     peerConnection.current.onicecandidate = iceCandidateHandler;
 
     try {
         const offer = await peerConnection.current.createOffer();
         await peerConnection.current.setLocalDescription(offer);
-        sendOffer(offer)
+        sendOffer()
         return true;
     } catch (error) {
         console.error('Error creating offer or setting local description:', error);
         return false;
     }
 
-    function sendOffer(offer) {
+    function sendOffer() {
         const offer_sdp = {
             type: 'create_offer',
             remote_id: selectedUser['user_id'], 
             status: selectedUser['status'], 
-            offer_sdp: offer
+            offer_sdp: peerConnection.current.localDescription
         };
         ws.send(JSON.stringify(offer_sdp));
     }
@@ -48,7 +48,7 @@ export async function create_offer_remote(peerConnection, server, ws, local_vide
         const candidate_obj = {
             type: 'create_ice_candidates',
             remote_id: selectedUser['user_id'], 
-            candidates: all_candidates
+            candidates: candidate
         };
         ws.send(JSON.stringify(candidate_obj));
     }

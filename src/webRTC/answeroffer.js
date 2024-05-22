@@ -13,30 +13,28 @@ export async function answer_offer_remote(peerConnection,server,ws,local_video_r
             remotestream.addTrack(track);
         });
     };
-
+    let all_candidate=[]
     const iceCandidateHandler  = async (event) => {
-        console.log("KFDLKF",event.candidate)
         if(event.candidate){
-          send_answer_Candidates(event.candidate)
-        }
-       
+          all_candidate.push(event.candidate)
+        }    
     };
     peerConnection.current.onicecandidate = iceCandidateHandler;
-    peerConnection.current.onicegatheringstatechange = () => {
-        console.log('ICE Gathering State Changed:', peerConnection.current.iceGatheringState);
-        if (peerConnection.current.iceGatheringState === 'complete') {
-            console.log('ICE Candidate gathering completed.');
-            answeroffer()
-        }
-    };
     await peerConnection.current.setRemoteDescription(offer_data)
     let answer=await peerConnection.current.createAnswer()
     await peerConnection.current.setLocalDescription(answer)
+    setTimeout(() => {
+        if (peerConnection.current.iceGatheringState !== 'complete') {
+            console.warn('ICE gathering timed out, sending answer offer with gathered candidates');
+            answeroffer();
+            send_answer_Candidates(all_candidate)
+        }
+    }, 1000);
     function answeroffer() {
         const offer = {
             type: 'answer_offer',
             remote_id: remote_user, 
-            offer_sdp: answer
+            offer_sdp: peerConnection.current.localDescription
         };
         
         ws.send(JSON.stringify(offer));
