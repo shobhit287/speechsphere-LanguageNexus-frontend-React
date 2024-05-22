@@ -16,6 +16,7 @@ export async function answer_offer_remote(peerConnection,server,ws,local_video_r
     let all_candidate=[]
     const iceCandidateHandler  = async (event) => {
         if(event.candidate){
+           console.log("KFJJFKFJKFJFKJKFJKFJKFJFKJF",event.candidate) 
           all_candidate.push(event.candidate)
         }    
     };

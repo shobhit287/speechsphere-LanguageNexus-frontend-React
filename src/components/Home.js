@@ -139,7 +139,7 @@ function handleAnswerIceCandidates(data){
 }
 function handleCreateIceCandidates(data){
   if(peerConnection.current){
-    console.log("ANSWER CANDIDATE",data)
+    console.log("CREATE CANDIDATE",data)
     data.forEach((candidate)=>{
       addCandidate(peerConnection,candidate)
     })
