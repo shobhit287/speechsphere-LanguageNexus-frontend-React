@@ -132,18 +132,18 @@ if (ws){
 function handleAnswerIceCandidates(data){
   if(peerConnection.current){
     console.log("ANSWER CANDIDATE",data)
-    
-      addCandidate(peerConnection,data)
-    
-  }
-}
-function handleCreateIceCandidates(data){
-  console.log("CREATE CANDIDATE BUT OUTSIDE PEER",data)
-  if(peerConnection.current){
-    console.log("CREATE CANDIDATE",data)
     data.forEach((candidate)=>{
       addCandidate(peerConnection,candidate)
     })
+  }
+}
+function handleCreateIceCandidates(data){
+  console.log("CREATE CANDIDATE BUT OUTSIDE",data)
+  if(peerConnection.current){
+    console.log("CREATE CANDIDATE",data)
+    
+      addCandidate(peerConnection,data)
+    
   }
 }
 
