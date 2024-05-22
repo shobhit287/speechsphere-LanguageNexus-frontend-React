@@ -131,6 +131,7 @@ if (ws){
 }
 function handleAnswerIceCandidates(data){
   if(peerConnection.current){
+    console.log("ANSWER CANDIDATE",data)
     data.forEach((candidate)=>{
       addCandidate(peerConnection,candidate)
     })
@@ -138,6 +139,7 @@ function handleAnswerIceCandidates(data){
 }
 function handleCreateIceCandidates(data){
   if(peerConnection.current){
+    console.log("ANSWER CANDIDATE",data)
     data.forEach((candidate)=>{
       addCandidate(peerConnection,candidate)
     })
