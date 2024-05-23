@@ -143,9 +143,9 @@ function handleCreateIceCandidates(data){
   console.log("CREATE CANDIDATE but without peer",data)
   if(peerConnection.current){
     console.log("CREATE CANDIDATE",data)
-    data.forEach((candidate)=>{
-      addCandidate(peerConnection,candidate)
-    })
+    
+      addCandidate(peerConnection,data)
+    
   }
 }
 
