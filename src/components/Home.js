@@ -80,7 +80,7 @@ function Home() {
   //eslint-disable-next-line 
   },[authenticated_status])
   
-
+const[candidates,setCandidates]=useState(null);
 //recieve data   
 if (ws){
   ws.onclose=async function(){
@@ -122,13 +122,21 @@ if (ws){
        handleRecievedMsg(data_recieve['msg'])
     }
     if (data_recieve['type']==="create_ice_candidates"){
-       handleCreateIceCandidates(data_recieve['candidate'])
+       setCandidates(data_recieve['candidate'])
     }
     if (data_recieve['type']==="answer_ice_candidates"){
        handleAnswerIceCandidates(data_recieve['candidate'])
     }
+
   }
 }
+useEffect(()=>{
+ 
+    if(candidates){
+      handleCreateIceCandidates(candidates)
+    }
+  
+},[candidates])
 function handleAnswerIceCandidates(data){
   if(peerConnection.current){
     console.log("ANSWER CANDIDATE",data)
@@ -138,12 +146,11 @@ function handleAnswerIceCandidates(data){
   }
 }
 function handleCreateIceCandidates(data){
-  console.log("CREATE CANDIDATE BUT OUTSIDE",data)
   if(peerConnection.current){
     console.log("CREATE CANDIDATE",data)
-    
-      addCandidate(peerConnection,data)
-    
+    data.forEach((candidate)=>{
+      addCandidate(peerConnection,candidate)
+    })
   }
 }
 

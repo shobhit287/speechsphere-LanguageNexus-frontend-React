@@ -13,11 +13,14 @@ export async function create_offer_remote(peerConnection, server, ws, local_vide
             remotestream.addTrack(track);
         });
     };
-  
+    
+    let all_candidate=[]
     const iceCandidateHandler = async (event) => {
-      if(event.candidate){
-        console.log("KFJJFKFJKFJFK____FJFKJF",event.candidate) 
-        send_candidates(event.candidate)
+      if(event.candidate){ 
+        all_candidate.push(event.candidate)
+    }
+    else{
+        send_candidates(all_candidate)
     }
 
 };

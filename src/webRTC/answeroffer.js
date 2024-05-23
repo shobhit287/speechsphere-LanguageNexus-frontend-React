@@ -1,6 +1,6 @@
 export async function answer_offer_remote(peerConnection,server,ws,local_video_ref,remote_video_ref,remote_user,offer_data){
   
-  var Connection = new RTCPeerConnection(server)
+    var Connection = new RTCPeerConnection(server)
     peerConnection.current=Connection
     let localstream = local_video_ref.current.srcObject;
     let remotestream = new MediaStream();
@@ -16,7 +16,6 @@ export async function answer_offer_remote(peerConnection,server,ws,local_video_r
     let all_candidate=[]
     const iceCandidateHandler  = async (event) => {
         if(event.candidate){
-           console.log("KFJJFKFJKFJFKJKFJKFJKFJFKJF",event.candidate) 
           all_candidate.push(event.candidate)
         }    
     };
@@ -24,6 +23,7 @@ export async function answer_offer_remote(peerConnection,server,ws,local_video_r
     await peerConnection.current.setRemoteDescription(offer_data)
     let answer=await peerConnection.current.createAnswer()
     await peerConnection.current.setLocalDescription(answer)
+    // debugger;
     setTimeout(() => {
         if (peerConnection.current.iceGatheringState !== 'complete') {
             console.warn('ICE gathering timed out, sending answer offer with gathered candidates');
