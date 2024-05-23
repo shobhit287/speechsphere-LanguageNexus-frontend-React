@@ -80,7 +80,7 @@ function Home() {
   //eslint-disable-next-line 
   },[authenticated_status])
   
-const[candidates,setCandidates]=useState(null);
+
 //recieve data   
 if (ws){
   ws.onclose=async function(){
@@ -122,7 +122,7 @@ if (ws){
        handleRecievedMsg(data_recieve['msg'])
     }
     if (data_recieve['type']==="create_ice_candidates"){
-       setCandidates(data_recieve['candidate'])
+      handleCreateIceCandidates(data_recieve['candidate'])
     }
     if (data_recieve['type']==="answer_ice_candidates"){
        handleAnswerIceCandidates(data_recieve['candidate'])
@@ -130,13 +130,7 @@ if (ws){
 
   }
 }
-useEffect(()=>{
- 
-    if(candidates){
-      handleCreateIceCandidates(candidates)
-    }
-  
-},[candidates])
+
 function handleAnswerIceCandidates(data){
   if(peerConnection.current){
     console.log("ANSWER CANDIDATE",data)
@@ -146,6 +140,7 @@ function handleAnswerIceCandidates(data){
   }
 }
 function handleCreateIceCandidates(data){
+  console.log("CREATE CANDIDATE but without peer",data)
   if(peerConnection.current){
     console.log("CREATE CANDIDATE",data)
     data.forEach((candidate)=>{

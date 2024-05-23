@@ -14,14 +14,12 @@ export async function create_offer_remote(peerConnection, server, ws, local_vide
         });
     };
     
-    let all_candidate=[]
+   
     const iceCandidateHandler = async (event) => {
       if(event.candidate){ 
-        all_candidate.push(event.candidate)
+        send_candidates(event.candidate)
     }
-    else{
-        send_candidates(all_candidate)
-    }
+ 
 
 };
     peerConnection.current.onicecandidate = iceCandidateHandler;
