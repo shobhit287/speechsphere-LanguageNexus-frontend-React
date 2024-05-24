@@ -174,6 +174,12 @@ function handleCallDisconnected(){
   setremotemediaaccess(false);
 }
 function handleCallConnectedSuccess(){
+
+  let data={'type':'answer_ice_candidates','candidates':answer_candidates.current,'remote_id':remote_user_id.current['user_id']}
+  ws.send(JSON.stringify(data))
+  remote_user_id.current=null;
+  
+
 setRemoteCall(false)  
 RemoteAudio.current.pause();
 }
@@ -300,7 +306,7 @@ function answerBtnHandler(event)
   const buttonText = event.target.innerText;
   if (buttonText==="Answer"){
    if(local_video.current){ 
-   answer_offer_remote(peerConnection,server,ws,local_video,remote_video,remote_user_id.current['user_id'],remote_user_answer.current) 
+   answer_offer_remote(peerConnection,server,ws,local_video,remote_video,remote_user_id.current['user_id'],remote_user_answer.current,answer_candidates) 
    setmessages([]);
    setremotemediaaccess(true);
    setStartBtnText("Stop")
@@ -431,6 +437,7 @@ if(remotemediaaccess===true && wsdata?.type==='user_leave'){
 }
 },[remotemediaaccess,wsdata?.type])
 const all_candidates=useRef([]);
+const answer_candidates=useRef([]);
  function handleStartCall(event) {
   const buttonText = event.target.innerText;
   if (buttonText==="Start"){
