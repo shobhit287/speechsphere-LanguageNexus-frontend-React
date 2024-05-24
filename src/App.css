@@ -774,3 +774,6 @@ border-color:red ;
 .camera_btn:hover{
   background-color:#855555; 
 }
+.mirrored_video{
+    transform: scaleX(-1);
+}

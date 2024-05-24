@@ -522,7 +522,7 @@ return(<div class="main_page">
 <div className="video_container">
 <div className="remote_video">
 
-    <video ref={remote_video}  autoPlay playsInline style={{display:remotemediaaccess?"grid":"none"}}></video>
+    <video ref={remote_video}  className="mirrored_video" autoPlay playsInline style={{display:remotemediaaccess?"grid":"none"}}></video>
   {remotemediaaccess ? (<></>
   ) : authenticated_status?<>
     <div style={{ position: 'relative', textAlign: 'center' }}>
@@ -570,7 +570,7 @@ return(<div class="main_page">
     onMouseEnter={() => setMicShow(true)}
     onMouseLeave={() => setMicShow(false)}
   >
-    <video ref={local_video} autoPlay playsInline muted></video>
+    <video ref={local_video} className="mirrored_video" autoPlay playsInline muted></video>
     {micShow && (
       <div style={{ position: 'absolute', bottom: '10px', left: '50%', transform: 'translateX(-50%)', display:'flex',gap:'20px' }}>
         {notMuted ? (
