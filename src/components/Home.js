@@ -167,6 +167,7 @@ function handleUserLeave(){
 }
 function handleCallDisconnected(){
   if (peerConnection.current){
+    peerConnection.current.close();
     peerConnection.current=null;}
   setStartBtnText("Start");
   setremotemediaaccess(false);
@@ -301,8 +302,11 @@ function answerBtnHandler(event)
    answer_offer_remote(peerConnection,server,ws,local_video,remote_video,remote_user_id.current['user_id'],remote_user_answer.current) 
    setmessages([]);
    setremotemediaaccess(true);
-   setStartBtnText("Stop")}
+   setStartBtnText("Stop")
+   remote_user_answer.current=null;
+  }
    else{
+    remote_user_answer.current=null;
     toast.error("Error While Accessing Media ")
     setRemoteCall(false);
     RemoteAudio.current.pause();
@@ -478,6 +482,7 @@ const all_candidates=useRef([]);
     remote_user_answer.current=null;
     if(peerConnection.current)
       {
+          peerConnection.current.close();
           peerConnection.current=null;
           setremotemediaaccess(false)
           handleDisconnectedCall();
