@@ -127,6 +127,10 @@ if (ws){
     if (data_recieve['type']==="answer_ice_candidates"){
        handleAnswerIceCandidates(data_recieve['candidate'])
     }
+    if (data_recieve['type']==="candidates_create"){
+      handleCreateIceCandidates(data_recieve['candidates'])
+    }
+    
 
   }
 }
@@ -142,7 +146,7 @@ function handleCreateIceCandidates(data){
   console.log("CREATE CANDIDATE but without peer",data)
   if(peerConnection.current){
     console.log("CREATE CANDIDATE",data)
-    data.current.forEach((candidate)=>{
+    data.forEach((candidate)=>{
       addCandidate(peerConnection,candidate)
     })
     all_candidates.current=[]
@@ -172,6 +176,8 @@ RemoteAudio.current.pause();
 }
 function handleAcceptedCall(data)
 {
+  let send_candidates={'type':'candidates_create','remote_id':selectedUser['user_id'],'candidates':all_candidates.current}
+  ws.send(JSON.stringify(send_candidates))
   accept_answer(peerConnection,data['answer_sdp'])
   setremotemediaaccess(true);
   set_offeredUser_window_popup(false);
@@ -288,8 +294,7 @@ function answerBtnHandler(event)
   const buttonText = event.target.innerText;
   if (buttonText==="Answer"){
    if(local_video.current){ 
-   answer_offer_remote(peerConnection,server,ws,local_video,remote_video,remote_user_id.current['user_id'],remote_user_answer.current)
-   handleCreateIceCandidates(all_candidates)
+   answer_offer_remote(peerConnection,server,ws,local_video,remote_video,remote_user_id.current['user_id'],remote_user_answer.current) 
    setmessages([]);
    setremotemediaaccess(true);
    setStartBtnText("Stop")}
