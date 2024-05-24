@@ -166,7 +166,9 @@ function handleUserLeave(){
   remote_user_id.current=null;
 }
 function handleCallDisconnected(){
-  peerConnection?.current?.close();
+  if (peerConnection.current){
+    peerConnection.current.close();
+  }
   setStartBtnText("Start");
   setremotemediaaccess(false);
 }
@@ -190,6 +192,9 @@ function cancelled_by_offered_user(){
   RemoteAudio.current.pause();
 }
 function handleCallRejected(rejected_by){
+if(peerConnection.current){
+  peerConnection.current=null;
+}
 set_offeredUser_window_popup(false);
 senderAudio.current.pause();
 setStartBtnText("Start")
@@ -310,7 +315,6 @@ function answerBtnHandler(event)
     setRemoteCall(false);
     RemoteAudio.current.pause();
     setStartBtnText("Start")
-    //send to remote user
     let data={'type':'rejected','user_id':remote_user_id.current['user_id']}
     ws.send(JSON.stringify(data))
   }
@@ -470,10 +474,8 @@ const all_candidates=useRef([]);
     dispatch(login_modal_handle(true));
   }}
   else{
-    if(peerConnection?.current?.currentRemoteDescription)
+    if(peerConnection.current)
       {
-          
-          peerConnection.current.close();
           peerConnection.current=null;
           setremotemediaaccess(false)
           handleDisconnectedCall();
