@@ -168,7 +168,8 @@ function handleUserLeave(){
 function handleCallDisconnected(){
   if (peerConnection.current){
     peerConnection.current.close();
-    peerConnection.current=null;}
+    }
+  peerConnection.current=null;
   setStartBtnText("Start");
   setremotemediaaccess(false);
 }
@@ -483,17 +484,17 @@ const all_candidates=useRef([]);
     if(peerConnection.current)
       {
           peerConnection.current.close();
-          peerConnection.current=null;
           setremotemediaaccess(false)
           handleDisconnectedCall();
           remote_user_id.current=null;
           setStartBtnText("Start")
-          
+         
       }
       else{
     handleCallCancelled();
     setStartBtnText("Start")
       }
+      peerConnection.current=null;
   }
 }
 function send_msg(event) {
