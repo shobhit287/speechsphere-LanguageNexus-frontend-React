@@ -133,7 +133,6 @@ if (ws){
 
 function handleAnswerIceCandidates(data){
   if(peerConnection.current){
-    console.log("ANSWER CANDIDATE",data)
     data.forEach((candidate)=>{
       addCandidate(peerConnection,candidate)
     })
@@ -143,9 +142,10 @@ function handleCreateIceCandidates(data){
   console.log("CREATE CANDIDATE but without peer",data)
   if(peerConnection.current){
     console.log("CREATE CANDIDATE",data)
-    
-      addCandidate(peerConnection,data)
-    
+    data.current.forEach((candidate)=>{
+      addCandidate(peerConnection,candidate)
+    })
+    all_candidates.current=[]
   }
 }
 
@@ -289,6 +289,7 @@ function answerBtnHandler(event)
   if (buttonText==="Answer"){
    if(local_video.current){ 
    answer_offer_remote(peerConnection,server,ws,local_video,remote_video,remote_user_id.current['user_id'],remote_user_answer.current)
+   handleCreateIceCandidates(all_candidates)
    setmessages([]);
    setremotemediaaccess(true);
    setStartBtnText("Stop")}
@@ -415,6 +416,7 @@ if(remotemediaaccess===true && wsdata?.type==='user_leave'){
   setremotemediaaccess(false)
 }
 },[remotemediaaccess,wsdata?.type])
+const all_candidates=useRef([]);
  function handleStartCall(event) {
   const buttonText = event.target.innerText;
   if (buttonText==="Start"){
@@ -428,7 +430,7 @@ if(remotemediaaccess===true && wsdata?.type==='user_leave'){
            if(local_video?.current?.srcObject){
             setmessages([]);
             remote_user_id.current={"user_id":selectedUser['user_id']}
-            let response=create_offer_remote(peerConnection,server,ws,local_video,remote_video,selectedUser)
+            let response=create_offer_remote(peerConnection,server,ws,local_video,remote_video,selectedUser,all_candidates)
             if (response){
               set_offeredUser_window_popup(true);
               let audio=new Audio(sender_tone)
