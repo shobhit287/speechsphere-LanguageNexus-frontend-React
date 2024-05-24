@@ -143,9 +143,7 @@ function handleAnswerIceCandidates(data){
   }
 }
 function handleCreateIceCandidates(data){
-  console.log("CREATE CANDIDATE but without peer",data)
   if(peerConnection.current){
-    console.log("CREATE CANDIDATE",data)
     data.forEach((candidate)=>{
       addCandidate(peerConnection,candidate)
     })
@@ -177,9 +175,6 @@ function handleCallConnectedSuccess(){
 
   let data={'type':'answer_ice_candidates','candidates':answer_candidates.current,'remote_id':remote_user_id.current['user_id']}
   ws.send(JSON.stringify(data))
-  remote_user_id.current=null;
-  
-
 setRemoteCall(false)  
 RemoteAudio.current.pause();
 }
