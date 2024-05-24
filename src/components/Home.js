@@ -167,8 +167,7 @@ function handleUserLeave(){
 }
 function handleCallDisconnected(){
   if (peerConnection.current){
-    peerConnection.current.close();
-  }
+    peerConnection.current=null;}
   setStartBtnText("Start");
   setremotemediaaccess(false);
 }
@@ -312,6 +311,7 @@ function answerBtnHandler(event)
    }
   }
   else{
+    remote_user_answer.current=null;
     setRemoteCall(false);
     RemoteAudio.current.pause();
     setStartBtnText("Start")
@@ -437,6 +437,7 @@ const all_candidates=useRef([]);
         }
         else{
            if(local_video?.current?.srcObject){
+            remote_user_answer.current=null;
             setmessages([]);
             remote_user_id.current={"user_id":selectedUser['user_id']}
             let response=create_offer_remote(peerConnection,server,ws,local_video,remote_video,selectedUser,all_candidates)
@@ -474,6 +475,7 @@ const all_candidates=useRef([]);
     dispatch(login_modal_handle(true));
   }}
   else{
+    remote_user_answer.current=null;
     if(peerConnection.current)
       {
           peerConnection.current=null;

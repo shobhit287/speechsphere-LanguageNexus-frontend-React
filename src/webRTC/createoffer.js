@@ -1,7 +1,6 @@
 export async function create_offer_remote(peerConnection, server, ws, local_video_ref, remote_video_ref, selectedUser,all_candidates) {
   
     var Connection = new RTCPeerConnection(server);
-    console.log("SERVER",server)
     peerConnection.current = Connection;
     let localstream = local_video_ref.current.srcObject;
     let remotestream = new MediaStream();
@@ -39,12 +38,5 @@ export async function create_offer_remote(peerConnection, server, ws, local_vide
         };
         ws.send(JSON.stringify(offer_sdp));
     }
-    // function send_candidates(candidate){
-    //     const candidate_obj = {
-    //         type: 'create_ice_candidates',
-    //         remote_id: selectedUser['user_id'], 
-    //         candidates: candidate
-    //     };
-    //     ws.send(JSON.stringify(candidate_obj));
-    // }
+
 }
