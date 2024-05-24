@@ -29,7 +29,7 @@ export async function create_offer_remote(peerConnection, server, ws, local_vide
         await peerConnection.current.setLocalDescription(offer);
         setTimeout(()=>{
             sendOffer();
-        },1000)
+        },2000)
         return true;
     } catch (error) {
         console.error('Error creating offer or setting local description:', error);
